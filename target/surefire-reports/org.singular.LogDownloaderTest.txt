@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.singular.LogDownloaderTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.963 sec - in org.singular.LogDownloaderTest

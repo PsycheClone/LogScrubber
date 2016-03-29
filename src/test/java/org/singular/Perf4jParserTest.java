@@ -10,7 +10,7 @@ public class Perf4jParserTest {
 
     @Test
     public void testParse() throws IOException {
-        perf4jParser.parse("/logExample.txt", "testEnv", 18000);
+//        perf4jParser.start("/logExample.txt", "testEnv", 18000);
     }
 }
 

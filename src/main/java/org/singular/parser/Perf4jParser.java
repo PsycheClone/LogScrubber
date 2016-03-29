@@ -1,32 +1,42 @@
 package org.singular.parser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
-import org.perf4j.LogParser;
 import org.singular.entities.Log;
 import org.singular.entities.LogLine;
 import org.singular.entities.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class Perf4jParser {
-    private final String rootDir = System.getProperty("user.dir");
+
+    private ObjectMapper mapper = new ObjectMapper();
+
+    private Logger LOGGER = LoggerFactory.getLogger(Perf4jParser.class);
+
+    private final String rootDir = System.getProperty("user.dir") + "/logs/";
+    private final String logsDir = rootDir + "downloaded/";
+
     private final Pattern timestampPattern = Pattern.compile("\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+");
 
-    public void parse(String file, String host, long time) throws IOException {
+    public void processLogs(File file) throws IOException {
         Log log = new Log();
         String line;
         String start = "";
         String end = "";
 
-        InputStream is = getClass().getResourceAsStream(file);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        BufferedReader br = new BufferedReader(new FileReader(file));
 
         while ((line = br.readLine()) != null) {
             if(line.startsWith("Performance Statistics")) {
@@ -40,17 +50,25 @@ public class Perf4jParser {
                     end = end.replace(" ", "T");
                 }
             }
+            LOGGER.debug("Perf4j timeslice: " + start + " - " + end);
             if(!line.startsWith("Performance Statistics") && !line.startsWith("Tag") && !line.equals("")) {
                 List<String> values = Lists.newArrayList(line.split("\\s{2,}"));
+                LOGGER.debug(values.toString());
                 log.addLogLine(
                         new Range(new DateTime(start), new DateTime(end)),
-                        new LogLine(values.get(0), Double.parseDouble(values.get(1)),
+                        new LogLine(values.get(0), parseDouble(values.get(1)),
                             Integer.parseInt(values.get(2)), Integer.parseInt(values.get(3)),
-                            Double.parseDouble(values.get(4)), Integer.parseInt(values.get(5))));
+                            parseDouble(values.get(4)), Integer.parseInt(values.get(5))));
             }
         }
-        String[] args = {getClass().getResource("/rawLogs.log").getFile(), "-t", Long.toString(time), "-o", rootDir+"/logs/"+host+"TimeSlice-"+Long.toString(time)+".log"};
-        LogParser.runMain(args);
+        LOGGER.debug(mapper.writeValueAsString(log));
+    }
+
+    private Double parseDouble(String value) {
+        if(value.contains(",")) {
+            value = value.replace(",", ".");
+        }
+        return Double.parseDouble(value);
     }
 }
 
