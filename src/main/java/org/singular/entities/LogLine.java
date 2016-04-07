@@ -8,6 +8,8 @@ public class LogLine {
     private Double StandardDeviation;
     private Integer Count;
 
+    public LogLine() {}
+
     public LogLine(String tag, Double average, Integer min, Integer max, Double standardDeviation, Integer count) {
         this.tag = tag;
         this.average = average;

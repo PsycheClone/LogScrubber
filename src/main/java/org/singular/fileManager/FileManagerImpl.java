@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 @Component
 public class FileManagerImpl implements FileManager {
@@ -22,25 +25,19 @@ public class FileManagerImpl implements FileManager {
         File checkFolder = new File(folder);
         if (!checkFolder.exists()) {
             checkFolder.mkdir();
-            LOGGER.info(checkFolder + " created.");
+            LOGGER.debug(checkFolder + " created.");
         } else {
-            LOGGER.info(checkFolder + " exists.");
+            LOGGER.debug(checkFolder + " exists.");
         }
         return checkFolder;
     }
 
     @Override
-    public boolean folderExists(String folder) {
-        return new File(folder).exists();
-    }
-
-    @Override
-    public String[] scanFolder(String folder, String wildcard) {
-        directoryScanner.setIncludes(new String[]{wildcard});
-        directoryScanner.setBasedir(folder);
-        directoryScanner.setCaseSensitive(false);
-        directoryScanner.scan();
-        return directoryScanner.getIncludedFiles();
+    public void storeFile(String filename, String content) throws FileNotFoundException, UnsupportedEncodingException {
+        File jsonFolder = createFolderIfNotExists(rootDir + "json");
+        PrintWriter writer = new PrintWriter(jsonFolder + "/" + filename, "UTF-8");
+        writer.write(content);
+        writer.close();
     }
 
     private void createRootFolderIfNotExists() {

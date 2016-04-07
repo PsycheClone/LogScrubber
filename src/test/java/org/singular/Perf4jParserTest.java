@@ -1,16 +1,18 @@
 package org.singular;
 
 import org.junit.Test;
-import org.singular.parser.Perf4jParser;
+import org.singular.parser.Perf4jLogParser;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Perf4jParserTest {
-    private Perf4jParser perf4jParser = new Perf4jParser();
+    String rootDir = System.getProperty("user.dir") + "/src/test/resources/";
+    private Perf4jLogParser perf4jParser = new Perf4jLogParser();
 
     @Test
     public void testParse() throws IOException {
-//        perf4jParser.start("/logExample.txt", "testEnv", 18000);
+        perf4jParser.processLogs(new File(rootDir + "logExample.txt"));
     }
 }
 

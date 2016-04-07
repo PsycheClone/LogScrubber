@@ -17,9 +17,9 @@ package org.singular.parser.perf4jClasses.helper;
 
 import org.singular.parser.perf4jClasses.TimingStatistics;
 
-import java.util.Map;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The StatsValueRetriever is used to enable retrieval of any of the statistics on the TimingStatistics object

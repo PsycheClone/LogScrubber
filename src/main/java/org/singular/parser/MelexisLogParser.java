@@ -32,16 +32,20 @@ public class MelexisLogParser {
 
     private final Pattern timestampPattern = Pattern.compile("\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+");
 
-    public void handleRawLogs(final File file) throws InterruptedException, IOException {
-        List<String> loglines = fillList(file);
-        long largestTimeSlice = getLargestPossibleTimeSlice(loglines);
-        LOGGER.info("Larget Possible Timeslice for " + file.getName() + ": " + largestTimeSlice + " minutes.");
-        for(String [] args : createOutputFileNames(file, largestTimeSlice)) {
+    public void extractPerf4jLogs(final File file) throws InterruptedException, IOException {
+        List<String> loglines = fillLoglineList(file);
+        int largestTimeSlice = getLargestPossibleTimeSlice(loglines);
+        LOGGER.info("Largest possible timeslice for " + file.getName() + ": " + largestTimeSlice + " minutes.");
+        for(String [] args : createArgsForLogParser(file, largestTimeSlice)) {
             LogParser.runMain(args);
         }
     }
 
-    private List<String> fillList(File file) throws IOException {
+    public void parseMelexisLogs(File file) {
+
+    }
+
+    private List<String> fillLoglineList(File file) throws IOException {
         List<String> loglines = new LinkedList<String>();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         String line;
@@ -52,18 +56,19 @@ public class MelexisLogParser {
         return loglines;
     }
 
-    private List<String []> createOutputFileNames(File file, long largestTimeSlice) {
+    private List<String []> createArgsForLogParser(File file, int largetTimeslice) {
         List<String []> argsForTimeSlices = new ArrayList<String[]>();
-        largestTimeSlice
-        String outputFile = outputFileName(file, 30);
-        String[] args = {file.getAbsolutePath(), "-t", toLong(30), "-o", outputFile};
+        for(int multipleOf5 = 5; multipleOf5 <= largetTimeslice; multipleOf5 = multipleOf5 + 5) {
+            argsForTimeSlices.add(new String[] {file.getAbsolutePath(), "-t", toLong(multipleOf5), "-o",  outputFileNamePerf4j(file, multipleOf5)});
+        }
+        return argsForTimeSlices;
     }
 
-    private long getLargestPossibleTimeSlice(List<String> loglines) {
+    private int getLargestPossibleTimeSlice(List<String> loglines) {
         DateTime earliest = new DateTime(getTimestamp(loglines.get(0)));
         DateTime latest = new DateTime(getTimestamp(loglines.get(loglines.size()-1)));
         Duration duration = new Duration(earliest, latest);
-        return duration.getStandardMinutes();
+        return (int)duration.getStandardMinutes();
     }
 
     public String getTimestamp(String line) {
@@ -74,7 +79,7 @@ public class MelexisLogParser {
         return null;
     }
 
-    private String outputFileName(File file, int slice) {
+    private String outputFileNamePerf4j(File file, int slice) {
         String fileName = file.getName().replace("done", "Timeslice-" + slice + "minutes");
         fileManager.createFolderIfNotExists(perfDir);
         return perfDir + fileName;

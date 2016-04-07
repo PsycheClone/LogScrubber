@@ -1,29 +1,49 @@
 package org.singular.entities;
 
-import java.util.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.singular.util.RangeDeserializer;
+import org.singular.util.RangeSerializer;
 
-public class Log {
-    private Map<Range, List<LogLine>> logLines = new TreeMap<Range, List<LogLine>>();
+import java.util.LinkedList;
+import java.util.List;
+
+public class Log implements Comparable<Log> {
+    @JsonSerialize(using = RangeSerializer.class)
+    @JsonDeserialize(using = RangeDeserializer.class)
+    private Range range;
+    private List<LogLine> logLines = new LinkedList<LogLine>();
 
     public Log() {
     }
 
-    public Log(Map<Range, List<LogLine>> logLines) {
+    public Log(Range range, List<LogLine> logLines) {
+        this.range = range;
         this.logLines = logLines;
     }
 
-    public Map<Range, List<LogLine>> getLogLines() {
+    public Range getRange() {
+        return range;
+    }
+
+    public void setRange(Range range) {
+        this.range = range;
+    }
+
+    public List<LogLine> getLogLines() {
         return logLines;
     }
 
-    public void setLogLines(Map<Range, List<LogLine>> logLines) {
+    public void setLogLines(List<LogLine> logLines) {
         this.logLines = logLines;
     }
 
-    public void addLogLine(Range range, LogLine logLine) {
-        if(logLines.get(range) == null) {
-            logLines.put(range, new LinkedList<LogLine>());
-        }
-        logLines.get(range).add(logLine);
+    public void addLogLine(LogLine logLine) {
+        logLines.add(logLine);
+    }
+
+    @Override
+    public int compareTo(Log o) {
+        return this.range.compareTo(o.range);
     }
 }

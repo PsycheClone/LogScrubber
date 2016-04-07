@@ -1,10 +1,9 @@
 package org.singular.entities;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
-/**
- * Created by Sven on 25/03/2016.
- */
 public class Range implements Comparable<Range> {
     private DateTime start;
     private DateTime end;
@@ -37,5 +36,11 @@ public class Range implements Comparable<Range> {
         if(this.start.isBefore(o.start)) return -1;
         if(this.start.isAfter(o.start)) return 1;
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        return fmt.print(start) + " to " + fmt.print(end);
     }
 }

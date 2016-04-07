@@ -1,14 +1,11 @@
-package org.singular.fileManager;
+package org.singular.fileManager.camel;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
-import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.file.GenericFile;
-import org.apache.camel.component.file.GenericFileFilter;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.singular.fileManager.FileManager;
 import org.singular.parser.MelexisLogParser;
-import org.singular.parser.Perf4jParser;
+import org.singular.parser.Perf4jLogParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +16,13 @@ import javax.annotation.PreDestroy;
 import java.io.File;
 
 @Component
-public class FileRoute {
+public class FileRoute{
 
     @Autowired
     private FileManager fileManager;
 
     @Autowired
-    private Perf4jParser perf4jParser;
+    private Perf4jLogParser perf4jParser;
 
     @Autowired
     private MelexisLogParser melexisLogParser;
@@ -42,23 +39,23 @@ public class FileRoute {
     public void start() {
         final File logsFolder = fileManager.createFolderIfNotExists(logsDir);
         final File perf4jFolder = fileManager.createFolderIfNotExists(perfDir);
-        final File doneFolder = fileManager.createFolderIfNotExists(perfDir + "done");
         try {
-            LOGGER.info("Camel File route started...");
             camelContext.addRoutes(
                     new RouteBuilder() {
                         @Override
                         public void configure() throws Exception {
                             from("file:" + logsFolder + "?include=.*-done.*&idempotent=true")
-                                    .bean(melexisLogParser, "handleRawLogs")
-                                    .to("file:" + doneFolder);
+                                    .threads(10)
+                                    .bean(melexisLogParser, "extractPerf4jLogs");
 
-                            from("file:" + perf4jFolder + "?idempotent=true&noop=true")
+                            from("file:" + perf4jFolder + "?idempotent=true")
+                                    .threads(10)
                                     .bean(perf4jParser, "processLogs");
                         }
                     }
             );
             camelContext.start();
+            LOGGER.info("Camel File route started...");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,5 +64,6 @@ public class FileRoute {
     @PreDestroy
     public void destroy() throws Exception {
         camelContext.stop();
+        LOGGER.info("Camel context stopped...");
     }
 }

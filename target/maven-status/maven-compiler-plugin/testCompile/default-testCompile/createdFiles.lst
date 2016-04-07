@@ -1,3 +1,3 @@
-org\singular\LogDownloaderTest.class
 org\singular\Perf4jParserTest.class
-org\singular\AppTest.class
+org\singular\LogSerializerTest.class
+org\singular\LogDownloaderTest.class
