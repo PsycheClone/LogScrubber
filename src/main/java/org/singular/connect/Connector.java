@@ -23,9 +23,9 @@ public class Connector {
         return this;
     }
 
-    public BufferedReader getStreamTail1000(String file) throws JSchException, IOException {
+    public BufferedReader readFileBackwards(String file) throws JSchException, IOException {
         channel = session.openChannel("exec");
-        ((ChannelExec) channel).setCommand("tail -1000 "+file);
+        ((ChannelExec) channel).setCommand("awk '{a[NR]=$0}END{for(i=NR;i>=1;i--)print a[i]}' "+file);
         channel.connect();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(channel.getInputStream()));
         return bufferedReader;

@@ -1,22 +1,27 @@
 package org.singular.entities;
 
+import org.joda.time.DateTime;
+
 public class LogLine {
+    private DateTime start;
     private String tag;
-    private Double average;
-    private Integer min;
-    private Integer max;
-    private Double StandardDeviation;
-    private Integer Count;
+    private Long duration;
 
-    public LogLine() {}
+    public LogLine() {
+    }
 
-    public LogLine(String tag, Double average, Integer min, Integer max, Double standardDeviation, Integer count) {
+    public LogLine(DateTime start, String tag, Long duration) {
+        this.start = start;
         this.tag = tag;
-        this.average = average;
-        this.min = min;
-        this.max = max;
-        StandardDeviation = standardDeviation;
-        Count = count;
+        this.duration = duration;
+    }
+
+    public DateTime getStart() {
+        return start;
+    }
+
+    public void setStart(DateTime start) {
+        this.start = start;
     }
 
     public String getTag() {
@@ -27,43 +32,11 @@ public class LogLine {
         this.tag = tag;
     }
 
-    public Double getAverage() {
-        return average;
+    public Long getDuration() {
+        return duration;
     }
 
-    public void setAverage(Double average) {
-        this.average = average;
-    }
-
-    public Integer getMin() {
-        return min;
-    }
-
-    public void setMin(Integer min) {
-        this.min = min;
-    }
-
-    public Integer getMax() {
-        return max;
-    }
-
-    public void setMax(Integer max) {
-        this.max = max;
-    }
-
-    public Double getStandardDeviation() {
-        return StandardDeviation;
-    }
-
-    public void setStandardDeviation(Double standardDeviation) {
-        StandardDeviation = standardDeviation;
-    }
-
-    public Integer getCount() {
-        return Count;
-    }
-
-    public void setCount(Integer count) {
-        Count = count;
+    public void setDuration(Long duration) {
+        this.duration = duration;
     }
 }

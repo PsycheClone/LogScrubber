@@ -23,12 +23,12 @@ import java.util.NoSuchElementException;
 
 /**
  * This Iterator wraps a {@link StopWatchLogIterator} to return a single {@link GroupedTimingStatistics} object for
- * each time slice detected. Thus, this iterator is a "gearing" iterator - if there are on average 100 StopWatches
- * logged during each time slice, the underlying StopWatchLogIterator will return 100 StopWatches for each single
+ * each time process detected. Thus, this iterator is a "gearing" iterator - if there are on average 100 StopWatches
+ * logged during each time process, the underlying StopWatchLogIterator will return 100 StopWatches for each single
  * GroupedTimingStatistics object returned by this Iterator.
  * <p/>
  * Note that it's assumed that the StopWatch Iterator is ordered according to start time. If this is not true, then
- * this class will create GroupedTimingStatistics that may reflect StopWatch data from a previous time slice.
+ * this class will create GroupedTimingStatistics that may reflect StopWatch data from a previous time process.
  *
  * @author Alex Devine
  */
@@ -39,7 +39,7 @@ public class
      */
     private Iterator<StopWatch> stopWatchIterator;
     /**
-     * The length of each time slice, in milliseconds.
+     * The length of each time process, in milliseconds.
      */
     private long timeSlice;
     /**
@@ -60,7 +60,7 @@ public class
      */
     private GroupedTimingStatistics currentGroupedTimingStatistics = new GroupedTimingStatistics();
     /**
-     * The end time, in milliseconds since the epoch, of the next time slice.
+     * The end time, in milliseconds since the epoch, of the next time process.
      */
     private long nextTimeSliceEndTime = 0L;
 
@@ -84,7 +84,7 @@ public class
      * @param stopWatchIterator      The StopWatch Iterator that provides the StopWatch instances. If stopWatchIterator
      * 								 returns a null value, will check to see if a timeslice is over and return
      * 								 GroupedTimingStatistics if necessary.
-     * @param timeSlice              The length of each time slice, in milliseconds.
+     * @param timeSlice              The length of each time process, in milliseconds.
      * @param createRollupStatistics Whether or not entries for "rollup" tags should be created
      */
     public GroupingStatisticsIterator(Iterator<StopWatch> stopWatchIterator,
@@ -163,7 +163,7 @@ public class
                 currentGroupedTimingStatistics.setStopTime(nextTimeSliceEndTime);
                 GroupedTimingStatistics retVal = currentGroupedTimingStatistics;
 
-                //set the state for the next slice
+                //set the state for the next process
                 currentGroupedTimingStatistics = new GroupedTimingStatistics();
                 currentGroupedTimingStatistics.setCreateRollupStatistics(createRollupStatistics);
                 if (stopWatch != null) {

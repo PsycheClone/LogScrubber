@@ -1,35 +1,26 @@
 package org.singular.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.singular.entities.Log;
-import org.singular.entities.LogLine;
+import org.singular.entities.Perf4jLog;
+import org.singular.entities.Perf4jLogLine;
 import org.singular.entities.Range;
-import org.singular.fileManager.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
 public class Perf4jLogParser {
-
-    @Autowired
-    private FileManager fileManager;
 
     @Autowired
     private ObjectMapper mapper;
@@ -42,23 +33,18 @@ public class Perf4jLogParser {
 
     private final Pattern timestampPattern = Pattern.compile("\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+");
 
-    public void processLogs(File file) throws IOException {
-        Set<Log> logs = new TreeSet<Log>();
+    public Perf4jLog processLogs(String perf4jLogs) throws IOException {
         String line;
         String start = "";
         String end = "";
 
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String [] logLines = perf4jLogs.split(System.getProperty("line.separator"));
 
-        Log log = new Log();
+        Perf4jLog log = new Perf4jLog();
 
-        while ((line = reader.readLine()) != null) {
-            if (line.startsWith("Performance Statistics")) {
-                if (log.getRange() != null) {
-                    logs.add(log);
-                }
-                log = new Log();
-                Matcher matcher = timestampPattern.matcher(line);
+        for(String logLine : Arrays.asList(logLines)) {
+            if (logLine.startsWith("Performance Statistics")) {
+                Matcher matcher = timestampPattern.matcher(logLine);
                 if (matcher.find()) {
                     start = matcher.group(0);
                     start = start.replace(" ", "T");
@@ -70,19 +56,18 @@ public class Perf4jLogParser {
                 log.setRange(new Range(new DateTime(start), new DateTime(end)));
             }
             LOGGER.debug("Perf4j timeslice: " + start + " - " + end);
-            if (!line.startsWith("Performance Statistics") && !line.startsWith("Tag") && !line.equals("")) {
-                List<String> values = Lists.newArrayList(line.split("\\s{2,}"));
+            if (!logLine.startsWith("Performance Statistics") && !logLine.startsWith("Tag") && !logLine.equals("")) {
+                List<String> values = Lists.newArrayList(logLine.split("\\s{2,}"));
                 LOGGER.debug(values.toString());
-                log.addLogLine(new LogLine(values.get(0), parseDouble(values.get(1)),
+                log.addLogLine(new Perf4jLogLine(values.get(0), parseDouble(values.get(1)),
                         Integer.parseInt(values.get(2)), Integer.parseInt(values.get(3)),
                         parseDouble(values.get(4)), Integer.parseInt(values.get(5))));
             }
         }
-        reader.close();
 
-        String json = mapper.writeValueAsString(log);
-        LOGGER.debug(json);
-        fileManager.storeFile(createFileName(start, end), json);
+//        String json = mapper.writeValueAsString(log);
+//        LOGGER.debug(json);
+        return log;
     }
 
     private String createFileName(String start, String end) {

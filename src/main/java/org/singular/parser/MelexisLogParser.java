@@ -32,13 +32,11 @@ public class MelexisLogParser {
 
     private final Pattern timestampPattern = Pattern.compile("\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+");
 
-    public void extractPerf4jLogs(final File file) throws InterruptedException, IOException {
+    public String extractPerf4jLogs(final File file) throws InterruptedException, IOException {
         List<String> loglines = fillLoglineList(file);
-        int largestTimeSlice = getLargestPossibleTimeSlice(loglines);
-        LOGGER.info("Largest possible timeslice for " + file.getName() + ": " + largestTimeSlice + " minutes.");
-        for(String [] args : createArgsForLogParser(file, largestTimeSlice)) {
-            LogParser.runMain(args);
-        }
+        String perf4jLogs = "";
+        String[] args = {file.getAbsolutePath(), "-t", toLong(5)};
+        return LogParser.runMain(args);
     }
 
     public void parseMelexisLogs(File file) {
@@ -60,6 +58,14 @@ public class MelexisLogParser {
         List<String []> argsForTimeSlices = new ArrayList<String[]>();
         for(int multipleOf5 = 5; multipleOf5 <= largetTimeslice; multipleOf5 = multipleOf5 + 5) {
             argsForTimeSlices.add(new String[] {file.getAbsolutePath(), "-t", toLong(multipleOf5), "-o",  outputFileNamePerf4j(file, multipleOf5)});
+        }
+        return argsForTimeSlices;
+    }
+
+    private List<String []> createArgsForLogParser2(File file, int largetTimeslice) {
+        List<String []> argsForTimeSlices = new ArrayList<String[]>();
+        for(int multipleOf5 = 5; multipleOf5 <= largetTimeslice; multipleOf5 = multipleOf5 + 5) {
+            argsForTimeSlices.add(new String[] {file.getAbsolutePath(), "-t", toLong(5)});
         }
         return argsForTimeSlices;
     }

@@ -22,7 +22,7 @@ public class LogParser {
     /**
      * The stream where the GroupedTimingStatistics data will be printed - if null, no statistics will be printed
      */
-    private PrintStream statisticsOutput;
+    private StringBuilder statisticsOutput;
     /**
      * The length of time, in milliseconds, of the timeslice of each GroupedTimingStatistics.
      */
@@ -39,15 +39,8 @@ public class LogParser {
     // --- Constructors ---
     /**
      * Default constructor reads input from standard in, writes statistics output to standard out, does not write
-     * graph output, has a time slice window of 30 seconds, and does not create rollup statistics.
+     * graph output, has a time process window of 30 seconds, and does not create rollup statistics.
      */
-    public LogParser() {
-        this(new InputStreamReader(System.in),
-                System.out,
-                30000L,
-                false /* don't create rollup statistics */,
-                new GroupedTimingStatisticsTextFormatter());
-    }
 
     /**
      * Creates a new LogParser to parse log data from the input.
@@ -59,7 +52,7 @@ public class LogParser {
      * @param createRollupStatistics Whether or not "rollup statistics" should be created for each timeslice of data.
      * @param statisticsFormatter    The formatter to use to print GroupedTimingStatistics
      */
-    public LogParser(Reader inputLog, PrintStream statisticsOutput,
+    public LogParser(Reader inputLog, StringBuilder statisticsOutput,
                      long timeSlice, boolean createRollupStatistics,
                      GroupedTimingStatisticsFormatter statisticsFormatter) {
         this.inputLog = inputLog;
@@ -75,7 +68,7 @@ public class LogParser {
      * Reads all the data from the inputLog, parses it, and writes the statistics data and graphing data as desired
      * to the output streams.
      */
-    public void parseLog() {
+    public String parseLog() {
 
         Iterator<StopWatch> stopWatchIter = new StopWatchLogIterator(inputLog);
 
@@ -87,28 +80,30 @@ public class LogParser {
             GroupedTimingStatistics statistics = statsIter.next();
 
             if (statisticsOutput != null) {
-                statisticsOutput.print(statisticsFormatter.format(statistics));
+                statisticsOutput.append(statisticsFormatter.format(statistics));
             }
         }
+        return statisticsOutput.toString();
     }
 
-    public static void runMain(String[] args) {
+    public static String runMain(String[] args) {
+        String logs = "";
         try {
             List<String> argsList = new ArrayList<String>(Arrays.asList(args));
 
-            PrintStream statisticsOutput = openStatisticsOutput(argsList);
+            StringBuilder statisticsOutput = new StringBuilder();
             long timeSlice = getTimeSlice(argsList);
             boolean rollupStatistics = getRollupStatistics(argsList);
             GroupedTimingStatisticsFormatter formatter = getStatisticsFormatter(argsList);
             Reader input = openInput(argsList);
 
-            new LogParser(input, statisticsOutput, timeSlice, rollupStatistics, formatter).parseLog();
+            logs = new LogParser(input, statisticsOutput, timeSlice, rollupStatistics, formatter).parseLog();
 
-            statisticsOutput.close();
             input.close();
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+        return logs;
     }
 
     protected static PrintStream openStatisticsOutput(List<String> argsList) throws IOException {

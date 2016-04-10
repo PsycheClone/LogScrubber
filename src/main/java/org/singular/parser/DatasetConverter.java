@@ -1,7 +1,7 @@
 package org.singular.parser;
 
-import org.singular.entities.Log;
-import org.singular.entities.LogLine;
+import org.singular.entities.Perf4jLog;
+import org.singular.entities.Perf4jLogLine;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -14,7 +14,7 @@ public class DatasetConverter {
     private String rows = "], \"rows\": [";
     private String postString = "]}}";
 
-    public String convertToBarchartWithAverageAndCountLabels(Log log) {
+    public String convertToBarchartWithAverageAndCountLabels(Perf4jLog log) {
         StringBuilder stringBuilder = new StringBuilder();
         prependRange(stringBuilder, log);
         averageAndCountLabels(stringBuilder);
@@ -23,12 +23,12 @@ public class DatasetConverter {
         return stringBuilder.toString();
     }
 
-    private void prependRange(StringBuilder stringBuilder, Log log) {
+    private void prependRange(StringBuilder stringBuilder, Perf4jLog log) {
         stringBuilder.append("{\"range\": \""+ log.getRange() + "\", \"chartData\": ");
     }
 
 
-    public String convertToBarchart(Log log) {
+    public String convertToBarchart(Perf4jLog log) {
         StringBuilder stringBuilder = new StringBuilder();
         prependRange(stringBuilder, log);
         averageLabel(stringBuilder);
@@ -45,10 +45,10 @@ public class DatasetConverter {
         stringBuilder.append(preString + average + rows);
     }
 
-    private void columnsForAverage(StringBuilder stringBuilder, Log log) {
+    private void columnsForAverage(StringBuilder stringBuilder, Perf4jLog log) {
         int amountOfLogs = log.getLogLines().size();
         int index = 0;
-        for(LogLine logLine : log.getLogLines()) {
+        for(Perf4jLogLine logLine : log.getLogLines()) {
             index ++;
             stringBuilder.append("{\"c\":[");
             columnValue(stringBuilder, "\""+logLine.getTag()+"\"");
@@ -61,10 +61,10 @@ public class DatasetConverter {
         }
     }
 
-    private void columnsForAverageAndCount(StringBuilder stringBuilder, Log log) {
+    private void columnsForAverageAndCount(StringBuilder stringBuilder, Perf4jLog log) {
         int amountOfLogs = log.getLogLines().size();
         int index = 0;
-        for(LogLine logLine : log.getLogLines()) {
+        for(Perf4jLogLine logLine : log.getLogLines()) {
             index ++;
             stringBuilder.append("{\"c\":[");
             columnValue(stringBuilder, "\""+logLine.getTag()+"\"");
@@ -93,13 +93,13 @@ public class DatasetConverter {
         stringBuilder.append(postString);
     }
 
-    private String setTooltip(LogLine logLine) {
+    private String setTooltip(Perf4jLogLine logLine) {
         DecimalFormat df = new DecimalFormat("#.#");
         df.setRoundingMode(RoundingMode.CEILING);
         return df.format(logLine.getAverage() / 1000) + " seconds in " + logLine.getCount() + " times";
     }
 
-    private String setTooltipForAverageAndCount(LogLine logLine) {
+    private String setTooltipForAverageAndCount(Perf4jLogLine logLine) {
         DecimalFormat df = new DecimalFormat("#.#");
         df.setRoundingMode(RoundingMode.CEILING);
         return df.format(logLine.getAverage() / 1000) + " seconds";

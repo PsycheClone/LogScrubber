@@ -1,3 +1,7 @@
+org\singular\DatasetConverterTest.class
+org\singular\parser\MelexisLogParserTest.class
+org\singular\SlicerTest.class
+org\singular\BaseTest.class
 org\singular\Perf4jParserTest.class
 org\singular\LogSerializerTest.class
 org\singular\LogDownloaderTest.class

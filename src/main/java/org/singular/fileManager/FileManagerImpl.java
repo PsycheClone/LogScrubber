@@ -22,7 +22,7 @@ public class FileManagerImpl implements FileManager {
     @Override
     public File createFolderIfNotExists(String folder) {
         createRootFolderIfNotExists();
-        File checkFolder = new File(folder);
+        File checkFolder = new File(rootDir+folder);
         if (!checkFolder.exists()) {
             checkFolder.mkdir();
             LOGGER.debug(checkFolder + " created.");
@@ -33,11 +33,35 @@ public class FileManagerImpl implements FileManager {
     }
 
     @Override
-    public void storeFile(String filename, String content) throws FileNotFoundException, UnsupportedEncodingException {
-        File jsonFolder = createFolderIfNotExists(rootDir + "json");
-        PrintWriter writer = new PrintWriter(jsonFolder + "/" + filename, "UTF-8");
+    public void storeFilesWithIndex(String folderName, String filename, String content) throws FileNotFoundException, UnsupportedEncodingException {
+        int fileIndex = 0;
+
+        File folder = createFolderIfNotExists(folderName);
+
+        File file = new File(folder + "/" + filename + fileIndex + ".log");
+        while(file.exists()) {
+            fileIndex++;
+            file = new File(folder + "/" + filename + fileIndex + ".log");
+        }
+        PrintWriter writer = new PrintWriter(file, "UTF-8");
         writer.write(content);
         writer.close();
+    }
+
+    @Override
+    public void storeFile(String folderName, String filename, String content) throws FileNotFoundException, UnsupportedEncodingException {
+
+        File folder = createFolderIfNotExists(folderName);
+        File file = new File(folder + "/" + filename + ".log");
+
+        PrintWriter writer = new PrintWriter(file, "UTF-8");
+        writer.write(content);
+        writer.close();
+    }
+
+    @Override
+    public File getFile(String fileName) {
+        return null;
     }
 
     private void createRootFolderIfNotExists() {

@@ -3,8 +3,8 @@ package org.singular;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.singular.entities.Log;
-import org.singular.entities.LogLine;
+import org.singular.entities.Perf4jLog;
+import org.singular.entities.Perf4jLogLine;
 import org.singular.entities.Range;
 import org.singular.parser.DatasetConverter;
 
@@ -12,8 +12,8 @@ import static org.junit.Assert.assertEquals;
 
 public class DatasetConverterTest {
 
-    private Log logToConvert;
-    private Log log2ToConvert;
+    private Perf4jLog logToConvert;
+    private Perf4jLog log2ToConvert;
 
     private String singleResultWitAverageAndCount;
     private String singleResult;
@@ -23,16 +23,16 @@ public class DatasetConverterTest {
 
     @Before
     public void before() {
-        logToConvert = new Log();
+        logToConvert = new Perf4jLog();
         Range range = new Range(new DateTime().minusHours(1), new DateTime());
         logToConvert.setRange(range);
-        LogLine logLine = new LogLine();
+        Perf4jLogLine logLine = new Perf4jLogLine();
         logLine.setTag("TestTag");
         logLine.setAverage(23.0);
         logLine.setCount(3);
         logToConvert.addLogLine(logLine);
 
-        log2ToConvert = new Log();
+        log2ToConvert = new Perf4jLog();
         log2ToConvert.setRange(range);
         log2ToConvert.addLogLine(logLine);
         log2ToConvert.addLogLine(logLine);

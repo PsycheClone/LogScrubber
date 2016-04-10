@@ -6,5 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 public interface FileManager {
     File createFolderIfNotExists(String folder);
-    void storeFile(String file, String content) throws FileNotFoundException, UnsupportedEncodingException;
+    void storeFilesWithIndex(String folder, String file, String content) throws FileNotFoundException, UnsupportedEncodingException;
+    void storeFile(String folder, String file, String content) throws FileNotFoundException, UnsupportedEncodingException;
+    File getFile(String fileName);
 }
