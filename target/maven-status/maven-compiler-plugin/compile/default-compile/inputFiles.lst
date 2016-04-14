@@ -1,3 +1,4 @@
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\BarchartLog.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\TimingStatistics.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\controllers\MainController.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\AcceptableRangeConfiguration.java
@@ -9,20 +10,18 @@ C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singul
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\GroupedTimingStatisticsTextFormatter.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\StopWatchLogIterator.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\controllers\DataController.java
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\scrubber\Slicer.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\scrubber\Scrubber.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\connect\Connector.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\BarchartData.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\GroupedTimingStatisticsFormatter.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\TimedRunnable.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\logDistribution\camel\LogAggregateStrategy.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\Range.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\fileManager\FileManager.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\logDistribution\camel\FileRoute.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\controllers\Perf4jDatasetTransformer.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\GroupedTimingStatistics.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\Perf4jLogLine.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\fileManager\FileManagerImpl.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\logDistribution\MessageSender.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\LoggingStopWatch.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\LogLine.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\Perf4jLogParser.java
@@ -34,9 +33,7 @@ C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singul
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\StatisticsExposingMBean.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\LogParser.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\Perf4jLog.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\logDistribution\Slicer.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\MelexisLogParser.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\logDistribution\Aggregator.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\StopWatchParser.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\StatsValueRetriever.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\StopWatch.java

@@ -4,92 +4,118 @@
     <title>LogScrubber</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
-<style>
-  * {
-    font-family: roboto slab;
-  }
+<body>
+<div class="header">
+<h1>esb-a-erfurt.test.elex.be</h1>
+<div class="searchDiv">
+    <div id="filterInput"></div>
+    <div id="sliceInput">
+        <input placeholder="Time Slice..." type="text" id="timeslice"/><a href="#" class="button" id="getSlice">get slice</a>
+    </div>
+</div>
+</div>
+<hr/>
+<table id="dashboard">
+  <tr>
+    <td>
+      <div id="stringControl"></div>
+    </td>
+    <td>
+      <div id="tableChart"></div>
+    </td>
+  </tr>
+</table>
 
-  h1 {
-    margin-left: 30px;
-    font-size: 40px;
-  }
-</style>
-<body style="background-color: #13202F">
-<h1 style="color: #4FCF70;">esb-a-erfurt.test.elex.be</h1>
-<input type="text" id="query"><input type="button" value="Search" id="search">
-<div id="chart_div" style="margin: 0 auto; display: block; width: 100%; height: 800px;"></div>
-<link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'/>
+<link href='../static/style.css' rel='stylesheet' type='text/css'/>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+  google.load('visualization', '1.1', {packages: ['controls']});
+</script>
 <script>
+// http://paletton.com/#uid=40s0n0kjQCW6Ni6bCrS6OyU1-uc
 //    <![CDATA[
 var client = new XMLHttpRequest();
 
-client.onreadystatechange = function() {
-  if (client.readyState == XMLHttpRequest.DONE) {
+var chartData = [['Tag', 'Average', {'type': 'string', 'role': 'tooltip'}]];
+var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
+var dataTable = new google.visualization.DataTable();
+var options;
+var tags;
 
-    var chartData = [['Tag', 'Average']];
-    var tags = client.responseText;
+google.visualization.events.addListener(dashboard, 'ready', function () {
+  $(".google-visualization-controls-label").remove();
+  var input = $("#4-input").detach();
+  $("#filterInput").append(input);
+  input.attr("placeholder", "Filter...");
+  input.focus();
+});
 
-    google.charts.load('current', {packages: ['corechart', 'bar']});
-    google.charts.setOnLoadCallback(drawBasic);
+function drawBasic() {
+  dataTable.addColumn('string', 'Tag');
+  dataTable.addColumn('number', 'Average');
+  // A column for custom tooltip content
+  dataTable.addColumn({type: 'string', role: 'tooltip'});
 
-    function drawBasic() {
-      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-
-      var data = google.visualization.arrayToDataTable(chartData);
-
-      var options = {
-        title: '2016-03-01 12:00 to 2016-03-01 12:30',
-        titleTextStyle: {
-          fontSize: '30',
-          color: '#F1EAE5'
-        },
-        backgroundColor: '#13202F',
-        colors: ['#5182BD'],
-        chartArea: {
-          width: '60%'
-        },
-        legend: 'none',
-        hAxis: {
-          textStyle: {
-            color: '#FFA661'
-          },
-          title: 'Seconds',
-          titleTextStyle: {
-            color: '#FFA661'
-          },
-          minValue: 0
-        },
-        vAxis: {
-          textStyle: {
-            color: '#FFA661'
-          }
-        }
-      };
-
-      var el = document.getElementById("search");
-      el.addEventListener("click", function () {
-        var queryString = document.getElementById("query").value;
-        filter(queryString);
-      });
-
-      function filter(substring) {
-        chartData = [['Tag', 'Average']];
-        for (var i in tags) {
-          if (tags[i][0].indexOf(substring) > -1)
-            chartData.push(tags[i]);
-        }
-        data = google.visualization.arrayToDataTable(chartData);
-        chart.draw(data, options);
-      }
-
-      filter("");
-      chart.draw(data, options);
-    }
+  for (var i in tags.logLines) {
+    var row = tags.logLines[i];
+    dataTable.addRow([row.tag, row.average, row.tag + "\n" + row.average + " seconds."]);
   }
-};
-  client.open("GET", "http://localhost:8090/json", true);
-  client.send(null);
+
+  options = { 'title': tags.range, 'tooltip': { isHtml: true },
+    'chartArea': {'width': '60%', 'height': '80%', 'left': '40%'},
+    'titleTextStyle': {
+      fontSize: '30',
+      color: '#6AA67A'
+    },
+    'colors': ['#9BC4A6'],
+    'backgroundColor': '#191E24',
+    'legend': 'none',
+    'hAxis': {
+      textStyle: {
+        color: '#6AA67A'
+      },
+      direction: 1,
+      title: 'Seconds',
+      titleTextStyle: {
+        color: '#6AA67A'
+      },
+      minValue: 0
+    },
+    'vAxis': {
+      textStyle: {
+        color: '#6AA67A'
+      }
+    }};
+
+  var stringFilter = new google.visualization.ControlWrapper({
+    'controlType': 'StringFilter',
+    'containerId': 'stringControl',
+    'options': {
+      'matchType': 'any',
+      'caseSensitive': 'false',
+      'filterColumnLabel': 'Tag'
+    }
+  });
+
+  var table = new google.visualization.ChartWrapper({
+    'chartType': 'BarChart',
+    'containerId': 'tableChart',
+    'options': options
+  });
+
+  dashboard.bind(stringFilter, table);
+}
+
+$.ajax({
+    url: "http://localhost:8090/json?host=esb-a-test.erfurt.elex.be&from=1460453400000&till=1460453700000",
+}).then(function(data) {
+    tags = data;
+    drawBasic();
+    dashboard.draw(dataTable);
+});
+
 //    ]]>
 </script>
 </body>

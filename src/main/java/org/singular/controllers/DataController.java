@@ -1,24 +1,26 @@
 package org.singular.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.singular.entities.Perf4jLog;
-import org.singular.parser.DatasetConverter;
+import org.singular.entities.BarchartLog;
+import org.singular.fileManager.FileManager;
 import org.singular.parser.MelexisLogParser;
 import org.singular.parser.Perf4jLogParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class DataController {
 
-    private DatasetConverter datasetConverter = new DatasetConverter();
+    @Autowired
+    private FileManager fileManager;
 
     @Autowired
     private MelexisLogParser melexisLogParser;
@@ -28,31 +30,30 @@ public class DataController {
 
     private Perf4jDatasetTransformer perf4jDatasetTransformer = new Perf4jDatasetTransformer();
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private Logger LOGGER = LoggerFactory.getLogger(DataController.class);
 
     String rootDir = System.getProperty("user.dir") + "/src/test/resources/";
-    String logsDir = System.getProperty("user.dir") + "/logs/json/";
+    String logsDir = System.getProperty("user.dir") + "/logs/";
 
-    @CrossOrigin(origins = "http://localhost:8090")
+    @CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping("json")
-    public String test() throws IOException, InterruptedException {
-        File jsonFile = new File(rootDir + "esb-a-test.erfurt.elex.be_1460277000000_1460277277000.log");
+    public BarchartLog perf4jBarchart(@RequestParam(value="host") String host, @RequestParam(value="from") long from, @RequestParam(value="till") long till)throws IOException, InterruptedException {
+        LOGGER.info("Barchart request for " + host + " from: " + from + " till: " + till);
+        File jsonFile = new File(logsDir + createFileName(host, from, till));
         return prepareBarchartData(jsonFile);
     }
 
-    private String prepareBarchartData(File file) throws IOException, InterruptedException {
-        return perf4jDatasetTransformer.transform(perf4jLogParser.processLogs(melexisLogParser.extractPerf4jLogs(file))).toString();
+    @CrossOrigin(origins = "http://localhost:8081")
+    @RequestMapping("timeslices")
+    public List<String> timeslices(@RequestParam(value="host") String host) {
+        return fileManager.getAvailableRanges(host);
     }
 
-    private String getContent(File file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String content = "";
-        String line;
-        while ((line = reader.readLine()) != null) {
-            content = content + line;
-        }
-        Perf4jLog log = objectMapper.readValue(content, Perf4jLog.class);
-        return datasetConverter.convertToBarchart(log);
+    private String createFileName(String host, long from, long till) {
+        return host + "_" + from + "_" + till + ".log";
+    }
+
+    private BarchartLog prepareBarchartData(File file) throws IOException, InterruptedException {
+        return perf4jDatasetTransformer.transform(perf4jLogParser.processLogs(melexisLogParser.extractPerf4jLogs(file)));
     }
 }

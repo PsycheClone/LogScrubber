@@ -13,17 +13,10 @@ import javax.jms.ConnectionFactory;
 @Configuration
 public class ScrubberConfiguration {
 
-//    private static final String JMS_BROKER_URL = "tcp://localhost:61616";
-
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JodaModule());
         return objectMapper;
     }
-
-//    @Bean
-//    public ConnectionFactory connectionFactory() {
-//        return new ActiveMQConnectionFactory(JMS_BROKER_URL);
-//    }
 }

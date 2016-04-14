@@ -2,7 +2,7 @@ package org.singular;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.singular.logDistribution.Slicer;
+import org.singular.scrubber.Slicer;
 
 public class SlicerTest extends BaseTest {
 
