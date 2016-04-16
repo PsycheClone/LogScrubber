@@ -89,7 +89,7 @@ public class Slicer {
     }
 
     private String createFileName() {
-        return host + "_" + start.getMillis() + "_" + start.plusMinutes(timeslice).getMillis();
+        return host + "_" + nearest5Minutes(end).getMillis() + "_" + start.getMillis();
     }
 
     public String getHost() {

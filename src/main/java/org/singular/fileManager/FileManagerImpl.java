@@ -25,7 +25,7 @@ public class FileManagerImpl implements FileManager {
 
     private final String rootDir = System.getProperty("user.dir") + "/logs/";
 
-    private DirectoryScanner directoryScanner = new DirectoryScanner();
+    private DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     private Logger LOGGER = LoggerFactory.getLogger(FileManagerImpl.class);
 
@@ -75,33 +75,63 @@ public class FileManagerImpl implements FileManager {
     }
 
     @Override
-    public List<String> getAvailableRanges(String host) {
+    public List<String> getAvailableStartTimes(String host) {
+        return Lists.transform(getFilteredFiles(host), new Function<String, String>() {
+            @Override
+            public String apply(String fileName) {
+                return getStart(fileName);
+            }
+        });
+    }
+
+    @Override
+    public List<String> getAllFiles() {
         File folder = new File(rootDir);
         File[] listOfFiles = folder.listFiles();
 
-        List<String> timeslices = Lists.transform(Arrays.asList(listOfFiles), new Function<File, String>() {
+        List<String> fileNames = Lists.transform(Arrays.asList(listOfFiles), new Function<File, String>() {
             @Override
             public String apply(File file) {
                 return file.getName();
             }
         });
 
-        List<String> filtered = Lists.newArrayList(Collections2.filter(timeslices, Predicates.containsPattern(host)));
-
-        return Lists.transform(filtered, new Function<String, String>() {
-            @Override
-            public String apply(String fileName) {
-                return getRangeFromFileName(fileName);
-            }
-        });
+        return fileNames;
     }
 
-    private String getRangeFromFileName(String fileName) {
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-        String[] parts = fileName.split("_");
-        String from = parts[1];
-        String till = parts[2].substring(0, parts[2].indexOf(".log"));
-        return fmt.print(new DateTime(Long.valueOf(from))) + " to " + fmt.print(new DateTime(Long.valueOf(till)));
+    @Override
+    public List<String> getFilteredFiles(String host) {
+        List<String> filtered = Lists.newArrayList(Collections2.filter(getAllFiles(), Predicates.containsPattern(host)));
+
+        return filtered;
+    }
+
+    @Override
+    public String getStart(String fileName) {
+        return formatToDateTimeString(splitFileName(fileName)[1]);
+    }
+
+    @Override
+    public String getEnd(String fileName) {
+       return formatToDateTimeString(splitFileName(fileName)[2].substring(0, splitFileName(fileName)[2].indexOf(".log")));
+    }
+
+    @Override
+    public String getStartFormatted(String fileName) {
+        return getStart(fileName).replace(" ", "T");
+    }
+
+    @Override
+    public String getEndFormatted(String fileName) {
+        return getEnd(fileName).replace(" ", "T");
+    }
+
+    private String[] splitFileName(String fileName) {
+        return fileName.split("_");
+    }
+
+    private String formatToDateTimeString(String millis) {
+        return fmt.print(new DateTime(Long.valueOf(millis)));
     }
 
     private File createRootFolderIfNotExists() {

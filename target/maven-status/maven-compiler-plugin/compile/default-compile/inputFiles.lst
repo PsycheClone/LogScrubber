@@ -1,4 +1,5 @@
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\BarchartLog.java
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\controllers\BarchartDatasetTransformer.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\TimingStatistics.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\controllers\MainController.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\AcceptableRangeConfiguration.java
@@ -13,12 +14,12 @@ C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singul
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\scrubber\Slicer.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\scrubber\Scrubber.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\connect\Connector.java
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\controllers\BarchartAggregator.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\BarchartData.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\helper\GroupedTimingStatisticsFormatter.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\TimedRunnable.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\Range.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\fileManager\FileManager.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\controllers\Perf4jDatasetTransformer.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\parser\perf4jClasses\GroupedTimingStatistics.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\entities\Perf4jLogLine.java
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\main\java\org\singular\fileManager\FileManagerImpl.java

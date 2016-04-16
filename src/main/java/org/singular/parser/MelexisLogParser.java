@@ -32,15 +32,16 @@ public class MelexisLogParser {
 
     private final Pattern timestampPattern = Pattern.compile("\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+");
 
-    public String extractPerf4jLogs(final File file) throws InterruptedException, IOException {
+    public String extractPerf4jLogs(File file, int slice) throws InterruptedException, IOException {
         List<String> loglines = fillLoglineList(file);
-        String perf4jLogs = "";
-        String[] args = {file.getAbsolutePath(), "-t", toLong(5)};
+        String[] args = {loglines.toString(), "-t", toLong(slice)};
         return LogParser.runMain(args);
     }
 
-    public void parseMelexisLogs(File file) {
-
+    public String extractPerf4jLogs(List<File> files, int slice) throws InterruptedException, IOException {
+        List<String> loglines = fillLoglineList(files);
+        String[] args = {loglines.toString(), "-t", toLong(slice)};
+        return LogParser.runMain(args);
     }
 
     private List<String> fillLoglineList(File file) throws IOException {
@@ -51,6 +52,19 @@ public class MelexisLogParser {
             loglines.add(line);
         }
         bufferedReader.close();
+        return loglines;
+    }
+
+    private List<String> fillLoglineList(List<File> files) throws IOException {
+        List<String> loglines = new LinkedList<String>();
+        for(File file : files) {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                loglines.add(line);
+            }
+            bufferedReader.close();
+        }
         return loglines;
     }
 

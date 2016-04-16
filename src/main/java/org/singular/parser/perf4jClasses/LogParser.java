@@ -160,7 +160,7 @@ public class LogParser {
             return new InputStreamReader(System.in);
         } else {
             String fileName = argsList.remove(0);
-            return new BufferedReader(new FileReader(fileName));
+            return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(fileName.getBytes())));
         }
     }
 

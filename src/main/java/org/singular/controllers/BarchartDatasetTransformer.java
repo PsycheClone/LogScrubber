@@ -8,7 +8,7 @@ import org.singular.entities.Perf4jLogLine;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Perf4jDatasetTransformer {
+public class BarchartDatasetTransformer {
 
     public BarchartLog transform(Perf4jLog logs) {
         BarchartLog barchartLog = new BarchartLog();

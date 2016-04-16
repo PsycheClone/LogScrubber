@@ -10,5 +10,11 @@ public interface FileManager {
     void storeFilesWithIndex(String folder, String file, String content) throws FileNotFoundException, UnsupportedEncodingException;
     void storeFile(String file, String content) throws FileNotFoundException, UnsupportedEncodingException;
     File getFile(String fileName);
-    List<String> getAvailableRanges(String host);
+    List<String> getAvailableStartTimes(String host);
+    List<String> getAllFiles();
+    List<String> getFilteredFiles(String host);
+    String getStart(String fileName);
+    String getEnd(String fileName);
+    String getStartFormatted(String fileName);
+    String getEndFormatted(String fileName);
 }
