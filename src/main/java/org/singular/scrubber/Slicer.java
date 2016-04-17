@@ -1,12 +1,12 @@
 package org.singular.scrubber;
 
-import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
-import org.singular.fileManager.FileManager;
-import org.singular.parser.MelexisLogParser;
+import org.singular.files.FileManager;
+import org.singular.parser.LogParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +21,11 @@ import java.util.List;
 @Scope("prototype")
 public class Slicer {
 
-    private int timeslice = 5;
+    @Value("${timeslice}")
+    private int timeslice;
 
     @Autowired
-    private MelexisLogParser melexisLogParser;
+    private LogParser logParser;
 
     @Autowired
     private FileManager fileManager;
@@ -43,17 +44,19 @@ public class Slicer {
 
     public void process(String line) throws IOException {
         if(reset) {
-            start = nearest5Minutes(new DateTime(melexisLogParser.getTimestamp(line)));
+            start = nearest5Minutes(new DateTime(logParser.getTimestamp(line)));
             timer = new DateTime();
             reset = false;
         }
 
-        end = new DateTime(melexisLogParser.getTimestamp(line));
+        end = new DateTime(logParser.getTimestamp(line));
 
         if(end.isBefore(start.minusMinutes(timeslice))) {
             takeSlice();
+            reservoir.clear();
+            reservoir.add(line);
             reset = true;
-        } else if(new DateTime().isAfter(timer.plusMinutes(5))) {
+        } else if(new DateTime().isAfter(timer.plusMinutes(timeslice))) {
             LOGGER.info(host + " slicer timed out...");
             timer = new DateTime();
         } else {
@@ -65,15 +68,14 @@ public class Slicer {
         String logsToStore = formatLogs();
         String fileName = createFileName();
         fileManager.storeFile(fileName, logsToStore);
-        LOGGER.info("Storing file for " + host + ": " + start + " - " + start.plusMinutes(timeslice));
-        reservoir = Lists.newArrayList(reservoir.get(0));
+        LOGGER.info("Storing file for " + host + ": " + start.minusMinutes(timeslice) + " - " + start);
     }
 
     private String formatLogs() {
         StringBuilder stringBuilder = new StringBuilder();
         Collections.reverse(reservoir);
-        for(String line : reservoir.size() > 1 ? reservoir.subList(1, reservoir.size() - 1) : reservoir) {
-            stringBuilder.append(line + "\"");
+        for(String line : reservoir) {
+            stringBuilder.append(line + "\n");
         }
         return stringBuilder.toString();
     }
@@ -89,7 +91,7 @@ public class Slicer {
     }
 
     private String createFileName() {
-        return host + "_" + nearest5Minutes(end).getMillis() + "_" + start.getMillis();
+        return host + "_" + nearest5Minutes(end).getMillis() + "_" + start.getMillis() + ".log";
     }
 
     public String getHost() {
@@ -98,5 +100,13 @@ public class Slicer {
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public int getTimeslice() {
+        return timeslice;
+    }
+
+    public void setTimeslice(int timeslice) {
+        this.timeslice = timeslice;
     }
 }

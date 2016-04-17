@@ -2,19 +2,16 @@ package org.singular.scrubber;
 
 import com.jcraft.jsch.JSchException;
 import org.singular.connect.Connector;
-import org.singular.fileManager.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -94,8 +91,10 @@ public class Scrubber implements BeanFactoryAware {
             LOGGER.debug(line);
             slicer.process(line);
         }
-        connector.disconnect();
         LOGGER.info("Connector for " + host + " found no more logs, disconnecting...");
+        br.close();
+        connector.disconnect();
+        LOGGER.info("Connector for " + host + " disconnected.");
     }
 
     @Override

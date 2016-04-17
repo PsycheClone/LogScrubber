@@ -1,7 +1,5 @@
 C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\BaseTest.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\SlicerTest.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\DatasetConverterTest.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\Perf4jParserTest.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\LogDownloaderTest.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\LogSerializerTest.java
-C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\parser\MelexisLogParserTest.java
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\parser\LogParserTest.java
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\DataFactory.java
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\creator\BarchartCreatorTest.java
+C:\Users\Sven\Development\home\LogScrubber2\LogScrubber\src\test\java\org\singular\slicer\SlicerTest.java

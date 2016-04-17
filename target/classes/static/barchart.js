@@ -1,7 +1,8 @@
+//    <![CDATA[
 var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard'));
 var dataTable = new google.visualization.DataTable();
 var options;
-var tags;
+var barchartData;
 
 google.visualization.events.addListener(dashboard, 'ready', function () {
     $(".google-visualization-controls-label").remove();
@@ -22,18 +23,17 @@ function drawBasic() {
     // A column for custom tooltip content
     dataTable.addColumn({type: 'string', role: 'tooltip'});
 
-    for (var i in tags.logLines) {
-        var row = tags.logLines[i];
+    for (var i in barchartData.dataset) {
+        var row = barchartData.dataset[i];
         dataTable.addRow([row.tag, row.average, row.tag + "\n" + row.average + " seconds."]);
     }
 
-    options = { 'title': tags.range,
+    options = { 'title': barchartData.range,
         'tooltip': { isHtml: true },
         'chartArea': {'width': '60%', 'height': '80%', 'left': '40%'},
         'titleTextStyle': {
             fontSize: '30'
         },
-        'legend': 'none',
         'hAxis': {
             direction: 1,
             title: 'Seconds',
@@ -60,3 +60,4 @@ function drawBasic() {
 
     dashboard.bind(stringFilter, table);
 }
+//    ]]>

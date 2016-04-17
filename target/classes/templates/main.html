@@ -5,9 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="icon" href="../../favicon.ico">
+  <meta name="description" content="Log Scrubber client">
+  <meta name="author" content="Sven Schittecatte">
+  <link rel="icon" href="../static/favicon.ico">
 
   <title>LogScrubber</title>
 
@@ -38,7 +38,13 @@
           </select>
         </div>
         <div class="form-group">
-          <input type="text" id="slice" placeholder="TimeSlice" class="form-control">
+          <select type="text" id="slice" class="form-control">
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option>30</option>
+            <option>60</option>
+          </select>
         </div>
         <button type="button" class="btn btn-primary getslice">get Slice</button>
       </form>
@@ -88,16 +94,10 @@
 
 var ranges;
 
-function moveSearchInput() {
-  $.each(data, function(index) {
-    $("select").append("<option>" + this + "</option>");
-  });
-}
-
 $(".getslice").click(function() {
   $.get("http://localhost:8090/json?host=esb-a-test.erfurt.elex.be&from=" + $("#range option:selected").val() + "&slice=" + $("#slice").val(), function(data) {
     dataTable = new google.visualization.DataTable();
-    tags = data;
+    barchartData = data;
     drawBasic();
     dashboard.draw(dataTable);
   });
@@ -112,17 +112,10 @@ $.ajax({
 }).then(function(data) {
   ranges = data;
   $.each(data, function(index) {
-    $("select").append("<option>" + this + "</option>");
+    $("#range").append("<option>" + this + "</option>");
   });
 });
 
-$.ajax({
-    url: "http://localhost:8090/json?host=esb-a-test.erfurt.elex.be&from=2016-04-15 16:05:00&slice=5",
-}).then(function(data) {
-    tags = data;
-    drawBasic();
-    dashboard.draw(dataTable);
-});
 //    ]]>
 </script>
 </body>
