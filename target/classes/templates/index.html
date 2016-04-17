@@ -44,7 +44,7 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-xs" th:each="host, index : ${hosts}">
+        <div class="col-xs-2" th:each="host, index : ${hosts}">
             <div class="box">
                 <a class="btn btn-primary" th:href="@{barchart/{host}(host=${host})}"><span th:text="${host}"></span></a>
             </div>

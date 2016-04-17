@@ -34,6 +34,9 @@
     <div id="navbar" class="navbar-collapse collapse">
       <form class="navbar-form navbar-right">
         <div class="form-group">
+          <div class="form-group">
+            <button type="button" class="btn btn-primary refreshRanges">refresh</button>
+          </div>
           <select id="range" class="form-control">
           </select>
         </div>
@@ -103,17 +106,24 @@ $(".getslice").click(function() {
 });
 
 $(document).ready(function(){
+  getRanges();
   $('.dropdown-toggle').dropdown();
 });
 
-$.ajax({
-  url: "http://localhost:8090/timeslices?host=" + [[${host}]] + "",
-}).then(function(data) {
-  ranges = data;
-  $.each(data, function(index) {
-    $("#range").append("<option>" + this + "</option>");
-  });
+$(".refreshRanges").click(function() {
+  getRanges();
 });
+
+function getRanges() {
+  $.ajax({
+    url: "http://localhost:8090/timeslices?host=" + [[${host}]] + "",
+  }).then(function (data) {
+    ranges = data;
+    $.each(data, function (index) {
+      $("#range").append("<option>" + this + "</option>");
+    });
+  });
+}
 
 //    ]]>
 </script>
