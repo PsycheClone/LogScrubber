@@ -105,12 +105,16 @@ $(".refreshRanges").click(function() {
 });
 
 function getRanges() {
+  var listRanges = [];
   $.ajax({
     url: "http://localhost:8090/ranges?host=" + [[${host}]] + "",
   }).then(function (data) {
     $.each(data, function (index) {
-      $("#range").append("<option>" + this + "</option>");
+      listRanges.push("<option>" + this + "</option>");
+
     });
+    $("#range").children().remove();
+    $("#range").append(listRanges.reverse());
   });
 }
 
