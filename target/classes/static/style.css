@@ -18,4 +18,19 @@
     margin-bottom: 10px!important;
 }
 
+.availablehosts {
+    color: #9d9d9d;
+    font-size: 18px;
+    padding: 15px 15px;
+}
+
+.host {
+    width: 100%;
+    margin: 20px;
+}
+
+.vertical-container {
+    margin-top: 100px;
+}
+
 /*http://paletton.com/#uid=63H0R0kl7m0umP8pIukg3d9b84q*/

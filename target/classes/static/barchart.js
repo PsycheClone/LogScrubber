@@ -5,15 +5,19 @@ var options;
 var barchartData;
 
 google.visualization.events.addListener(dashboard, 'ready', function () {
+
+    //moving search input every time the chart draws itself
     $(".google-visualization-controls-label").remove();
     var inputField = $("#4-input").detach();
     $("#search").append(inputField);
     inputField.attr("placeholder", "Filter...");
     inputField.attr("class", "form-control inputMoved");
     inputField.attr("id", "searchInput");
+
     if($(".inputMoved").length > 1) {
         $(".inputMoved")[0].remove();
     }
+
     inputField.focus();
 });
 
@@ -25,12 +29,12 @@ function drawBasic() {
 
     for (var i in barchartData.dataset) {
         var row = barchartData.dataset[i];
-        dataTable.addRow([row.tag, row.average, row.tag + "\n" + row.average + " seconds."]);
+        dataTable.addRow([row.tag, row.average, row.tag + "\n" + row.average + " seconds over " + row.count + " times."]);
     }
 
     options = { 'title': barchartData.range,
         'tooltip': { isHtml: true },
-        'chartArea': {'width': '60%', 'height': '80%', 'left': '40%'},
+        'chartArea': {'width': '60%', 'height': '80%', 'left': '30%'},
         'titleTextStyle': {
             fontSize: '30'
         },

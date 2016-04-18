@@ -4,13 +4,15 @@ public class BarchartData extends Data {
 
     private String tag;
     private Double average;
+    private long count;
 
     public BarchartData() {
     }
 
-    public BarchartData(String tag, Double average) {
+    public BarchartData(String tag, Double average, long count) {
         this.tag = tag;
         this.average = average;
+        this.count = count;
     }
 
     public String getTag() {
@@ -29,8 +31,20 @@ public class BarchartData extends Data {
         this.average = average;
     }
 
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
     @Override
     public String toString() {
-        return "[" + tag + ", " + average + "]";
+        return "BarchartData{" +
+                "tag='" + tag + '\'' +
+                ", average=" + average +
+                ", count=" + count +
+                '}';
     }
 }

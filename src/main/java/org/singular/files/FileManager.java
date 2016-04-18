@@ -2,7 +2,6 @@ package org.singular.files;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -16,10 +15,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.*;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +34,6 @@ public class FileManager {
 
     @PostConstruct
     public void deleteAllLogFiles() throws IOException {
-        LOGGER.info(rootDir);
         if(deleteOnStartup) {
             LOGGER.info("Clearing logs folder...");
             createRootFolderIfNotExists();

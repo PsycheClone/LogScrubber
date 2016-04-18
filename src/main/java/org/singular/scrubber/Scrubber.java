@@ -1,12 +1,14 @@
 package org.singular.scrubber;
 
 import com.jcraft.jsch.JSchException;
+import org.singular.config.Locations;
 import org.singular.connect.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,23 +25,26 @@ public class Scrubber implements BeanFactoryAware {
     @Value("${scrub}")
     private boolean scrub;
 
-    @Value("${hosts.esb}")
-    private String[] esbHosts;
-
-    @Value("${location.esb}")
-    private String esbLogLocation;
-
-    @Value("${hosts.mdp}")
-    private String[] mdpHosts;
-
-    @Value("${location.mdp}")
-    private String mdpLogLocation;
+//    @Value("${hosts.esb}")
+//    private String[] esbHosts;
+//
+//    @Value("${location.esb}")
+//    private String esbLogLocation;
+//
+//    @Value("${hosts.mdp}")
+//    private String[] mdpHosts;
+//
+//    @Value("${location.mdp}")
+//    private String mdpLogLocation;
 
     @Value("${melexis.username}")
     private String user;
 
     @Value("${melexis.password}")
     private String password;
+
+    @Autowired
+    private Locations locations;
 
     private BeanFactory beanFactory;
 
@@ -52,12 +57,7 @@ public class Scrubber implements BeanFactoryAware {
     @PostConstruct
     public void start() {
         if(scrub) {
-            for (String site : Arrays.asList(esbHosts)) {
-                ENVIRONMENTS.put(site, esbLogLocation);
-            }
-            for (String site : Arrays.asList(mdpHosts)) {
-                ENVIRONMENTS.put(site, mdpLogLocation);
-            }
+            fillEnvironments();
             LOGGER.info("Starting LogDownloader.");
             for (final Map.Entry<String, String> environment : ENVIRONMENTS.entrySet()) {
                 Thread thread = new Thread(new Runnable() {
@@ -95,6 +95,14 @@ public class Scrubber implements BeanFactoryAware {
         br.close();
         connector.disconnect();
         LOGGER.info("Connector for " + host + " disconnected.");
+    }
+
+    private void fillEnvironments() {
+        for (String site : locations.getLocations()) {
+            String host = site.substring(0, site.indexOf("/"));
+            String path = site.substring(site.indexOf("/"));
+            ENVIRONMENTS.put(host, path);
+        }
     }
 
     @Override

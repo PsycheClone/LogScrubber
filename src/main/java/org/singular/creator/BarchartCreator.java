@@ -29,6 +29,7 @@ public class BarchartCreator extends AbstractCreator<BarchartDataset> {
 
             barchartData.setTag(metrics.getKey());
             barchartData.setAverage(new BigDecimal(average / 1000).setScale(2, RoundingMode.HALF_UP).doubleValue());
+            barchartData.setCount(metrics.getValue().size());
 
             barchartDataset.addToDataset(barchartData);
         }

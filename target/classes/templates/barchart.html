@@ -11,11 +11,10 @@
 
   <title>LogScrubber</title>
 
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
 </head>
 
 <body>
@@ -42,11 +41,6 @@
         </div>
         <div class="form-group">
           <select type="text" id="slice" class="form-control">
-            <option>5</option>
-            <option>10</option>
-            <option>15</option>
-            <option>30</option>
-            <option>60</option>
           </select>
         </div>
         <button type="button" class="btn btn-primary getslice">get Slice</button>
@@ -81,20 +75,15 @@
   </footer>
 </div> <!-- /container -->
 
-<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'/>
 <link th:href="@{/style.css}" rel='stylesheet' type='text/css'/>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+
 <script type="text/javascript">
   google.load('visualization', '1.1', {packages: ['controls']});
 </script>
+
 <script type="text/javascript" th:src="@{/barchart.js}"></script>
 <script th:inline="javascript">
 //    <![CDATA[
-
-var ranges;
 
 $(".getslice").click(function() {
   $.get("http://localhost:8090/json?host=" + [[${host}]] + "&from=" + $("#range option:selected").val() + "&slice=" + $("#slice").val(), function(data) {
@@ -107,6 +96,7 @@ $(".getslice").click(function() {
 
 $(document).ready(function(){
   getRanges();
+  getSlice();
   $('.dropdown-toggle').dropdown();
 });
 
@@ -116,12 +106,21 @@ $(".refreshRanges").click(function() {
 
 function getRanges() {
   $.ajax({
-    url: "http://localhost:8090/timeslices?host=" + [[${host}]] + "",
+    url: "http://localhost:8090/ranges?host=" + [[${host}]] + "",
   }).then(function (data) {
-    ranges = data;
     $.each(data, function (index) {
       $("#range").append("<option>" + this + "</option>");
     });
+  });
+}
+
+function getSlice() {
+  $.ajax({
+    url: "http://localhost:8090/timeslice",
+  }).then(function (data) {
+    for(var slice = data; slice <= 60; slice = slice + data) {
+      $("#slice").append("<option>" + slice + "</option>");
+    }
   });
 }
 
