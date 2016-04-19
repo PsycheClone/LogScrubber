@@ -7,6 +7,10 @@
   <version>1.0-SNAPSHOT</version>
   <name>LogScrubber</name>
 
+  <scm>
+    <connection>scm:git:https://github.com/PsycheClone/LogScrubber.git</connection>
+  </scm>
+
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
