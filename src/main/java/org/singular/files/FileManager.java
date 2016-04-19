@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -26,6 +27,9 @@ public class FileManager {
     @Value("${deleteOnStartup}")
     private boolean deleteOnStartup;
 
+    @Value("${timeslice}")
+    private int timeslice;
+
     private String rootDir = System.getProperty("user.home") + "/logs/";
 
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
@@ -38,7 +42,24 @@ public class FileManager {
             LOGGER.info("Clearing logs folder...");
             createRootFolderIfNotExists();
             FileUtils.cleanDirectory(new File(rootDir));
+        } else {
+            if(!isLogsFolderConsistent()) {
+                LOGGER.error(System.getProperty("user.home") + "/logs folder contains timeslices greater of smaller than requested timeslice.  Either set scrub=false or set deleteOnStartup=true");
+                System.exit(1);
+            }
         }
+    }
+
+    private boolean isLogsFolderConsistent() {
+        boolean consistent = true;
+        for(File file : getAllFiles()) {
+            long result = new DateTime(getEndParsable(file.getName())).getMillis() - new DateTime(getStartParsable(file.getName())).getMillis();
+            if(result != timeslice * 60 * 1000) {
+                LOGGER.info(file.getName() + " not consistent!");
+                consistent = false;
+            }
+        }
+        return consistent;
     }
 
     public void storeFile(String filename, String content) throws FileNotFoundException, UnsupportedEncodingException {

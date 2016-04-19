@@ -1,16 +1,11 @@
 package org.singular.creator;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.common.collect.Lists;
-import static org.junit.Assert.assertEquals;
-
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.singular.BaseTest;
 import org.singular.DataFactory;
@@ -22,6 +17,9 @@ import org.singular.parser.LogParser;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class BarchartCreatorTest extends BaseTest {
 
