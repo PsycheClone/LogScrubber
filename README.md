@@ -7,6 +7,8 @@ log4j.logger.org.perf4j.TimingLogger logs to the file you want to scrub.
 
 #### Preparation
 
+Download the LogScrubber jar located in the /target folder.
+
 Create a override.properties file and place it in .logscrubber/ in your home folder.
 
 ##### In this file you can override:
@@ -20,6 +22,11 @@ deleteOnStartup (Wether or not the tool should clear the existing logs folder.  
 ##### Also in this file you must declare the hosts and paths to the logs you want to scrub:
 
 log.locations[x]=hostName/path/to/perf4j.log
+
+##### And provide your username and password:
+
+melexis.username=xxx
+melexis.password=xxx
 
 #### How it works
 
