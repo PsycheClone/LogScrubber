@@ -24,18 +24,6 @@ public class Scrubber implements BeanFactoryAware {
     @Value("${scrub}")
     private boolean scrub;
 
-//    @Value("${hosts.esb}")
-//    private String[] esbHosts;
-//
-//    @Value("${location.esb}")
-//    private String esbLogLocation;
-//
-//    @Value("${hosts.mdp}")
-//    private String[] mdpHosts;
-//
-//    @Value("${location.mdp}")
-//    private String mdpLogLocation;
-
     @Value("${melexis.username}")
     private String user;
 
