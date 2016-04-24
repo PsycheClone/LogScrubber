@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.singular.dto.BarchartData;
 import org.singular.dto.BarchartDataset;
 import org.singular.dto.Range;
+import org.singular.dto.util.BarchartDataAverageAscendingComparator;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -34,6 +35,7 @@ public class BarchartCreator extends AbstractCreator<BarchartDataset> {
             barchartDataset.addToDataset(barchartData);
         }
         metricsPerTag.clear();
+        barchartDataset.getDataset().sort(new BarchartDataAverageAscendingComparator());
         return barchartDataset;
     }
 }

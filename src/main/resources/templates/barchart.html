@@ -12,6 +12,7 @@
   <title>LogScrubber</title>
 
   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet' type='text/css'/>
   <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
@@ -52,6 +53,7 @@
 <div class="jumbotron">
   <div class="container">
     <h2 th:text="${host}"></h2>
+    <h2 id="rangeTitle"></h2>
   </div>
 </div>
 <div class="container" id="search">
@@ -59,10 +61,10 @@
 <div class="dashboard-container">
   <table id="dashboard">
     <tr>
-      <td>
+      <td id="stringControlRow">
         <div id="stringControl"></div>
       </td>
-      <td>
+      <td id="tableChartRow">
         <div id="tableChart"></div>
       </td>
     </tr>
@@ -87,10 +89,9 @@
 
 $(".getslice").click(function() {
   $.get("http://localhost:8090/json?host=" + [[${host}]] + "&from=" + $("#range option:selected").val() + "&slice=" + $("#slice").val(), function(data) {
-    dataTable = new google.visualization.DataTable();
-    barchartData = data;
-    drawBasic();
-    dashboard.draw(dataTable);
+    fillDatatable(data);
+    basicSetup();
+    drawTable();
   });
 });
 
@@ -127,6 +128,9 @@ function getSlice() {
     }
   });
 }
+
+window.onload = drawTable();
+window.onresize = drawTable;
 
 //    ]]>
 </script>
