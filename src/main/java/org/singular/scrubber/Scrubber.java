@@ -2,7 +2,8 @@ package org.singular.scrubber;
 
 import com.jcraft.jsch.JSchException;
 import org.singular.config.Locations;
-import org.singular.connect.Connector;
+import org.singular.connect.LocalConnector;
+import org.singular.connect.RemoteConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -39,19 +40,21 @@ public class Scrubber implements BeanFactoryAware {
 
     private final static Map<String, String> ENVIRONMENTS = new HashMap();
 
-    private final static String rootDir = System.getProperty("user.dir") + "/logs/";
-
     @PostConstruct
     public void start() {
         if(scrub) {
             fillEnvironments();
-            LOGGER.info("Starting LogDownloader.");
+            LOGGER.info("Starting Scrubber.");
             for (final Map.Entry<String, String> environment : ENVIRONMENTS.entrySet()) {
                 Thread thread = new Thread(new Runnable() {
                     public void run() {
                         try {
                             LOGGER.info("Retrieving logs from " + environment.getKey());
-                            retrieveLogs(environment.getKey(), environment.getValue());
+                            if(environment.getKey().equalsIgnoreCase("localhost")) {
+                                retrieveLocalLogs(environment.getKey(), environment.getValue());
+                            } else {
+                                retrieveRemoteLogs(environment.getKey(), environment.getValue());
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSchException e) {
@@ -66,22 +69,31 @@ public class Scrubber implements BeanFactoryAware {
         }
     }
 
-    public void retrieveLogs(String host, String path) throws IOException, JSchException {
-        Connector connector = new Connector();
+    private void retrieveRemoteLogs(String host, String path) throws IOException, JSchException {
+        RemoteConnector connector = new RemoteConnector();
+        BufferedReader reader = connector.connect(host, user, password).readFileBackwards(path);
+        sliceLogs(reader, host);
+    }
+
+    private void retrieveLocalLogs(String name, String path) throws IOException {
+        LocalConnector connector = new LocalConnector();
+        BufferedReader reader = connector.readFileBackwards(path);
+        sliceLogs(reader, name);
+    }
+
+    private void sliceLogs(BufferedReader reader, String name) throws IOException {
         Slicer slicer = (Slicer) beanFactory.getBean("slicer");
-        slicer.setHost(host);
-        BufferedReader br = connector.connect(host, user, password).readFileBackwards(path);
+        slicer.setHost(name);
         String line;
 
-        LOGGER.info("Starting to read from " + host);
-        while ((line = br.readLine()) != null) {
+        LOGGER.info("Starting to read from " + name);
+        while ((line = reader.readLine()) != null) {
             LOGGER.debug(line);
             slicer.process(line);
         }
-        LOGGER.info("Connector for " + host + " found no more logs, disconnecting...");
-        br.close();
-        connector.disconnect();
-        LOGGER.info("Connector for " + host + " disconnected.");
+        LOGGER.info("Connector for " + name + " found no more logs, disconnecting...");
+        reader.close();
+        LOGGER.info("Connector for " + name + " disconnected.");
     }
 
     private void fillEnvironments() {
