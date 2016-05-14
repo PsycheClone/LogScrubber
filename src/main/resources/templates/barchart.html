@@ -58,6 +58,7 @@
 </div>
 <div class="container" id="search">
 </div>
+
 <div class="dashboard-container">
   <table id="dashboard">
     <tr>
@@ -69,7 +70,6 @@
       </td>
     </tr>
   </table>
-
   <hr/>
 
   <footer>
@@ -89,6 +89,7 @@
 
 $(".getslice").click(function() {
   $.get("http://localhost:8090/json?host=" + [[${host}]] + "&from=" + $("#range option:selected").val() + "&slice=" + $("#slice").val(), function(data) {
+    dataTable = new google.visualization.DataTable();
     fillDatatable(data);
     basicSetup();
     drawTable();
