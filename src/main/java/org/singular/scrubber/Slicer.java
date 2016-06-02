@@ -30,6 +30,7 @@ public class Slicer {
     @Autowired
     private FileManager fileManager;
 
+    private boolean tailer;
     private boolean reset = true;
     private String host;
     private DateTime start;
@@ -44,14 +45,14 @@ public class Slicer {
 
     public void process(String line) throws IOException {
         if(reset) {
-            start = nearest5Minutes(new DateTime(logParser.getTimestamp(line)));
+            start = nearestXMinutes(new DateTime(logParser.getTimestamp(line)));
             timer = new DateTime();
             reset = false;
         }
 
         end = new DateTime(logParser.getTimestamp(line));
 
-        if(end.isBefore(start.minusMinutes(timeslice))) {
+        if(end.isAfter(start.plusMinutes(timeslice))) {
             takeSlice();
             reservoir.clear();
             reservoir.add(line);
@@ -61,37 +62,45 @@ public class Slicer {
             timer = new DateTime();
         } else {
             reservoir.add(line);
+            LOGGER.debug(line);
         }
     }
 
-    public void takeSlice() throws FileNotFoundException, UnsupportedEncodingException {
+    private void takeSlice() throws FileNotFoundException, UnsupportedEncodingException {
         String logsToStore = formatLogs();
         String fileName = createFileName();
         fileManager.storeFile(fileName, logsToStore);
-        LOGGER.info("Storing file for " + host + ": " + start.minusMinutes(timeslice) + " - " + start);
+        LOGGER.info("Storing file for " + host + ": " + start + " - " + start.plusMinutes(timeslice));
     }
 
     private String formatLogs() {
         StringBuilder stringBuilder = new StringBuilder();
-        Collections.reverse(reservoir);
         for(String line : reservoir) {
             stringBuilder.append(line + "\n");
         }
         return stringBuilder.toString();
     }
 
-    public DateTime nearest5Minutes(DateTime time) {
+    public DateTime nearestXMinutes(DateTime time) {
         int subtractMinutes = time.getMinuteOfHour()%timeslice;
         int subtractSeconds = time.getSecondOfMinute();
         int subtractMillisecs = time.getMillisOfSecond();
 
         int subtractTotal = (((subtractMinutes * 60) + subtractSeconds) * 1000) + subtractMillisecs;
 
-        return new DateTime(time.minus(subtractTotal).plusMinutes(timeslice));
+        return new DateTime(time.minus(subtractTotal));
     }
 
     private String createFileName() {
-        return host + "_" + start.minusMinutes(timeslice).getMillis() + "_" + start.getMillis() + ".log";
+        return host + "_" + start.getMillis() + "_" + start.plusMinutes(timeslice).getMillis() + ".log";
+    }
+
+    public boolean isTailer() {
+        return tailer;
+    }
+
+    public void setTailer(boolean tailer) {
+        this.tailer = tailer;
     }
 
     public String getHost() {

@@ -1,9 +1,10 @@
 package org.singular.scrubber;
 
-import com.jcraft.jsch.JSchException;
+import org.apache.commons.io.input.Tailer;
+import org.apache.commons.io.input.TailerListener;
 import org.singular.config.Locations;
-import org.singular.connect.LocalConnector;
-import org.singular.connect.RemoteConnector;
+import org.singular.connect.local.FileTailer;
+import org.singular.connect.local.LocalConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +27,6 @@ public class Scrubber implements BeanFactoryAware {
     @Value("${scrub}")
     private boolean scrub;
 
-    @Value("${melexis.username}")
-    private String user;
-
-    @Value("${melexis.password}")
-    private String password;
-
     @Autowired
     private Locations locations;
 
@@ -38,28 +34,27 @@ public class Scrubber implements BeanFactoryAware {
 
     private Logger LOGGER = LoggerFactory.getLogger(Scrubber.class);
 
-    private final static Map<String, String> ENVIRONMENTS = new HashMap();
+    private final static Map<String, String> APPS = new HashMap();
 
     @PostConstruct
     public void start() {
         if(scrub) {
-            fillEnvironments();
+            fillApplicationLocations();
             LOGGER.info("Starting Scrubber.");
-            for (final Map.Entry<String, String> environment : ENVIRONMENTS.entrySet()) {
+            for (final Map.Entry<String, String> appLocation : APPS.entrySet()) {
+
+                Slicer slicer = createSlicer(appLocation.getKey(), true);
+                TailerListener tailerListener = new FileTailer(slicer);
+                LOGGER.info("Starting Tailer on " + appLocation.getKey() + " logs...");
+                Tailer.create(new File(appLocation.getValue()), tailerListener, 50L, true);
+
                 Thread thread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            LOGGER.info("Retrieving logs from " + environment.getKey());
-                            if(environment.getKey().equalsIgnoreCase("localhost")) {
-                                retrieveLocalLogs(environment.getKey(), environment.getValue());
-                            } else {
-                                retrieveRemoteLogs(environment.getKey(), environment.getValue());
-                            }
-                        } catch (IOException e) {
+                            LOGGER.info("Reading logs from " + appLocation.getKey() + " from back to front...");
+                            retrieveLocalLogs(appLocation.getKey(), appLocation.getValue());
+                        } catch (Exception e) {
                             e.printStackTrace();
-                        } catch (JSchException e) {
-                            e.printStackTrace();
-                        } finally {
                         }
                     }
                 });
@@ -69,38 +64,48 @@ public class Scrubber implements BeanFactoryAware {
         }
     }
 
-    private void retrieveRemoteLogs(String host, String path) throws IOException, JSchException {
-        RemoteConnector connector = new RemoteConnector();
-        BufferedReader reader = connector.connect(host, user, password).readFileBackwards(path);
-        sliceLogs(reader, host);
-    }
-
     private void retrieveLocalLogs(String name, String path) throws IOException {
         LocalConnector connector = new LocalConnector();
         BufferedReader reader = connector.readFileBackwards(path);
-        sliceLogs(reader, name);
-    }
-
-    private void sliceLogs(BufferedReader reader, String name) throws IOException {
-        Slicer slicer = (Slicer) beanFactory.getBean("slicer");
-        slicer.setHost(name);
+        ReverseSlicer slicer = createReverseSlicer(name, false);
         String line;
 
         LOGGER.info("Starting to read from " + name);
         while ((line = reader.readLine()) != null) {
-            LOGGER.debug(line);
-            slicer.process(line);
+            sliceLogs(slicer, line);
         }
+
         LOGGER.info("Connector for " + name + " found no more logs, disconnecting...");
         reader.close();
         LOGGER.info("Connector for " + name + " disconnected.");
     }
 
-    private void fillEnvironments() {
+    private Slicer createSlicer(String name, boolean tailer) {
+        Slicer slicer = (Slicer) beanFactory.getBean("slicer");
+        slicer.setHost(name);
+        slicer.setTailer(tailer);
+        return slicer;
+    }
+
+    private ReverseSlicer createReverseSlicer(String name, boolean tailer) {
+        ReverseSlicer slicer = (ReverseSlicer) beanFactory.getBean("reverseSlicer");
+        slicer.setHost(name);
+        slicer.setTailer(tailer);
+        return slicer;
+    }
+
+    private void sliceLogs(ReverseSlicer slicer, String line) throws IOException {
+        LOGGER.debug(line);
+        slicer.process(line);
+    }
+
+    private void fillApplicationLocations() {
         for (String site : locations.getLocations()) {
-            String host = site.substring(0, site.indexOf("/"));
-            String path = site.substring(site.indexOf("/"));
-            ENVIRONMENTS.put(host, path);
+            String[] components = site.split(":");
+            LOGGER.info(components.toString());
+            String host = components[0];
+            String path = components[1];
+            APPS.put(host, path);
         }
     }
 

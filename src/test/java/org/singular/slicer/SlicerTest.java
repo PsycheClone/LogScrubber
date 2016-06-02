@@ -29,15 +29,16 @@ public class SlicerTest extends BaseTest {
     public void before() {
         MockitoAnnotations.initMocks(this);
         slicer.setHost("testHost");
+        slicer.setTailer(true);
         slicer.setTimeslice(5);
     }
 
     @Test
     public void sliceLogTest() throws IOException {
         File file = new File(testDir + "loglines4Test.log");
-        String firstFileName = "testHost_1460785800000_1460786100000.log";
+        String firstFileName = "testHost_1460785500000_1460785800000.log";
         File firstPartToTest = new File(testDir + "slicer/slicerTestFirstPart.log");
-        String secondFileName = "testHost_1460786100000_1460786400000.log";
+        String secondFileName = "testHost_1460785800000_1460786100000.log";
         File secondPartToTest = new File(testDir + "slicer/slicerTestSecondPart.log");
         String content = getContent(file);
 

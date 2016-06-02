@@ -1,7 +1,7 @@
 package org.singular.controllers;
 
-import org.singular.creator.BarchartCreator;
-import org.singular.dto.BarchartDataset;
+import org.singular.creator.RangeChartCreator;
+import org.singular.dto.RangeDataset;
 import org.singular.files.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +24,22 @@ public class DataController {
     private FileManager fileManager;
 
     @Autowired
-    private BarchartCreator barchartCreator;
+    private RangeChartCreator rangeChartCreator;
 
     private Logger LOGGER = LoggerFactory.getLogger(DataController.class);
 
     @RequestMapping("json")
-    public BarchartDataset perf4jBarchart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="slice") int slice)throws IOException, InterruptedException {
+    public RangeDataset perf4jBarchart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="slice") int slice)throws IOException, InterruptedException {
         LOGGER.info("Barchart request for " + host + " from: " + from + " slice: " + slice);
         String formattedTime = from.replace(" ", "T");
-        return barchartCreator.create(host, formattedTime, formattedTime, slice);
+        return rangeChartCreator.create(host, formattedTime, formattedTime, slice);
+    }
+
+    @RequestMapping("tablechart")
+    public RangeDataset tablechart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="slice") int slice)throws IOException, InterruptedException {
+        LOGGER.info("Barchart request for " + host + " from: " + from + " slice: " + slice);
+        String formattedTime = from.replace(" ", "T");
+        return rangeChartCreator.create(host, formattedTime, formattedTime, slice);
     }
 
     @RequestMapping("ranges")

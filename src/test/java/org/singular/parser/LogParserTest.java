@@ -16,7 +16,7 @@ public class LogParserTest extends BaseTest {
 
     @Test
     public void parseLogTest() throws IOException {
-        File log = new File(testDir + "loglines4Test.log");
+        File log = new File(testDir + "loglines4ReverseTest.log");
         String content = getContent(log);
 
         List<LogLine> logLines = logParser.parseLogs(content);

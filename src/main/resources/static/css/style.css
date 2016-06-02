@@ -1,0 +1,81 @@
+body, html {
+    height: 100%;
+}
+
+.navbar-fixed-top {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: url('../images/header.png');
+}
+
+#dashboard{
+    width: 100%;
+}
+
+#stringControlRow {
+    width: 0px;
+}
+
+#tableChartRow {
+    width: 100%;
+}
+
+#tableChart {
+    width: 100%;
+}
+
+#search {
+    margin-bottom: 30px;
+}
+
+.dashboard-container {
+    width: 100%;
+}
+
+.jumbotron {
+    padding-bottom: 10px!important;
+    margin-bottom: 10px!important;
+}
+
+.availablehosts {
+    color: #9d9d9d;
+    font-size: 18px;
+    padding: 15px 15px;
+}
+
+.host {
+    width: 100%;
+    margin: 20px;
+}
+
+#rangeTitle {
+    font-family: 'Poppins', sans-serif;
+}
+
+.vertical-container {
+    margin-top: 100px;
+}
+
+#melexis_logo {
+    height: 30px;
+    width: 81px;
+}
+
+#melexis_logo>a>img {
+    height: 100%;
+    width: 100%;
+}
+
+#melexis_logo>a {
+    height: 86px;
+    width: 232px;
+}
+
+.footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+/*http://paletton.com/#uid=63H0R0kl7m0umP8pIukg3d9b84q*/

@@ -10,13 +10,21 @@
     <link rel="icon" th:href="@{/favicon.ico}"/>
 
     <title>LogScrubber</title>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous"/>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script th:src="@{bower_components/bootstrap/dist/js/bootstrap.js}"/>
+    <script th:src="@{bower_components/moment/moment.js}"/>
+    <script th:src="@{bower_components/bootstrap/js/transition.js}"/>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+    <link th:href="@{bower_components/bootstrap/dist/css/bootstrap-melexis-branding.css}" media='screen' rel='stylesheet' type='text/css'/>
+    <link th:href="@{css/style.css}" rel='stylesheet' type='text/css'/>
+
 </head>
 
 <body>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-fixed-top bg-primary">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -25,12 +33,24 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <div id="melexis_logo" class="navbar-header">
+                <a class="navbar-brand" href="/">
+                    <img th:src="@{images/melexis_logoBaselineWhite.png}"/>
+                </a>
+            </div>
+
         </div>
-        <a class="navbar-brand" href="/">Log Scrubber</a>
         <div id="navbar" class="navbar-collapse collapse">
-                <div class="navbar-right availablehosts">
-                    <span>Available hosts</span>
-                </div>
+            <ul class="nav availablehosts">
+                <li class="navbar-right">
+                    <form class="navbar-form navbar-right">
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="daterange" value="01/01/2015 1:30 PM - 01/01/2015 2:00 PM" />
+                        </div>
+                        <button type="button" class="btn btn-info">Get</button>
+                    </form>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
@@ -45,12 +65,24 @@
     </div>
 
     <hr/>
+</div>
 
-    <footer>
-        <p>&copy; Singular</p>
-    </footer>
-</div> <!-- /container -->
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">&copy; Singular</p>
+    </div>
+</footer>
 
-<link th:href="@{/style.css}" rel='stylesheet' type='text/css'/>
+<script type="text/javascript">
+    $(function() {
+        $('input[name="daterange"]').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'MM/DD/YYYY h:mm A'
+            }
+        });
+    });
+</script>
 </body>
 </html>
