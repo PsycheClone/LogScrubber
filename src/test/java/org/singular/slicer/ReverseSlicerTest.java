@@ -8,21 +8,16 @@ import org.mockito.MockitoAnnotations;
 import org.singular.BaseTest;
 import org.singular.files.FileManager;
 import org.singular.parser.LogParser;
-import org.singular.scrubber.Slicer;
+import org.singular.scrubber.ReverseSlicer;
 
 import java.io.*;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-/**
- * Created by sven on 02/06/16.
- */
 public class ReverseSlicerTest extends BaseTest {
 
     @InjectMocks
-    private Slicer slicer;
+    private ReverseSlicer slicer;
 
     @Mock
     private LogParser logParser;
@@ -47,6 +42,9 @@ public class ReverseSlicerTest extends BaseTest {
         File secondPartToTest = new File(testDir + "slicer/reverse/slicerReverseTestSecondPart.log");
         String content = getContent(file);
 
+        when(logParser.getTimestamp("2016-04-16 07:59:31,883 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191555] time[328] tag[::: Dashboard/DSL/AvailabilityByDeviceAndMachine :::]"))
+                .thenReturn("2016-04-16T07:59:31");
+
         when(logParser.getTimestamp("2016-04-16 07:49:37,230 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[10] tag[To Complete the slice]"))
                 .thenReturn("2016-04-16T07:49:37");
         when(logParser.getTimestamp("2016-04-16 07:51:37,230 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[10] tag[ActiveMQ2ConnectionFactoryExtension/createConnection]"))
@@ -62,8 +60,7 @@ public class ReverseSlicerTest extends BaseTest {
                 .thenReturn("2016-04-16T07:56:31");
         when(logParser.getTimestamp("2016-04-16 07:58:31,555 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191531] time[24] tag[::: Dashboard/DSL/latestMachines :::]"))
                 .thenReturn("2016-04-16T07:58:31");
-        when(logParser.getTimestamp("2016-04-16 07:59:31,883 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191555] time[328] tag[::: Dashboard/DSL/AvailabilityByDeviceAndMachine :::]"))
-                .thenReturn("2016-04-16T07:59:31");
+
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(content.getBytes())));
         String line;

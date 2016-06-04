@@ -50,7 +50,7 @@ public class RangeChartCreatorTest extends BaseTest {
 
         when(logParser.parseLogs(getContent(file))).thenReturn(dataFactory.getLoglines());
 
-        RangeDataset barchartLog = rangeChartCreator.create("testHost", "2016-04-16T08:30:00", "2016-04-16T08:30:00", 15);
+        RangeDataset barchartLog = rangeChartCreator.create("testHost", "2016-04-16T08:30:00", "2016-04-16T08:30:00", 15).get(0);
         assertEquals(barchartLog.getRange(), (new Range(new DateTime("2016-04-16T08:30:00"), new DateTime("2016-04-16T08:45:00"))));
         assertEquals(barchartLog.getDataset().size(), 7);
     }

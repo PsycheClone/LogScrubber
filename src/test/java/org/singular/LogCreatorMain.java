@@ -18,7 +18,7 @@ public class LogCreatorMain {
         int minutes = 0;
         while(true) {
             DateTime time = new DateTime();
-            int duration = (int)(Math.random()*1500);
+            String duration = String.valueOf((int)(Math.random()*1500)).replaceAll(",", "");
             int tagNumber = (int)(Math.random()*3);
             String tag = "This is tag number " + tagNumber;
             String timeFormatted = time.plusMinutes(++minutes).toLocalDateTime().toString();

@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -105,10 +104,25 @@ public class FileManager {
         return Arrays.asList(listOfFiles);
     }
 
-    public List<File> getFilteredFilesWithinRange(final String host, final String from, int slice) {
+    public List<File> getFilteredFilesWithinRange(final String host, final String from, int range) {
         final DateTime fromTime = new DateTime(from);
-        final DateTime tillTime = fromTime.plusMinutes(slice);
-        List<File> filtered = Lists.newArrayList(Collections2.filter(getAllFiles(), new Predicate<File>() {
+        final DateTime tillTime = fromTime.plusMinutes(range);
+        List<File> filtered = getFiltered(host, fromTime, tillTime);
+
+        return filtered;
+    }
+
+    public List<File> getFilteredFilesBeforeAndAfter(final String host, final String from, int range) {
+        final DateTime time = new DateTime(from);
+        final DateTime fromTime = time.minusMinutes(range);
+        final DateTime tillTime = time.plusMinutes(range);
+        List<File> filtered = getFiltered(host, fromTime, tillTime);
+
+        return filtered;
+    }
+
+    private List<File> getFiltered(final String host, final DateTime fromTime, final DateTime tillTime) {
+        return Lists.newArrayList(Collections2.filter(getAllFiles(), new Predicate<File>() {
             @Override
             public boolean apply(File file) {
                 String fileName = file.getName();
@@ -124,8 +138,6 @@ public class FileManager {
                 return false;
             }
         }));
-
-        return filtered;
     }
 
     public List<File> getFilteredFiles(final String host) {

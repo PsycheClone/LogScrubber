@@ -1,41 +1,38 @@
 package org.singular.creator;
 
-import javafx.util.Pair;
+import com.google.common.collect.Lists;
 import org.joda.time.DateTime;
-import org.singular.dto.TagData;
-import org.singular.dto.RangeDataset;
+import org.singular.dto.LogLine;
 import org.singular.dto.Range;
+import org.singular.dto.RangeDataset;
 import org.singular.dto.util.TagDataAverageAscendingComparator;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class RangeChartCreator extends AbstractCreator<RangeDataset> {
 
+
+
     @Override
-    protected RangeDataset calculate() {
+    protected List<File> getLogs(String host, String from, int range) throws IOException {
+        return fileManager.getFilteredFilesWithinRange(host, from, range);
+    }
+
+    @Override
+    protected List<RangeDataset> calculate(List<File> filteredFiles) throws IOException {
+        List<LogLine> logLines = logParser.parseLogs(fileReader.getContent(filteredFiles));
+        aggregateMetrics(logLines);
+
         RangeDataset rangeDataset = new RangeDataset();
-        rangeDataset.setRange(new Range(new DateTime(header), new DateTime(header).plusMinutes(slice)));
-        for(Map.Entry<String, List<Pair<DateTime, Long>>> metrics : metricsPerTag.entrySet()) {
-            TagData tagData = new TagData();
-            double average = 0;
-            for(Pair<DateTime, Long> pair : metrics.getValue()) {
-                average = average + pair.getValue();
-            }
-            average = average / metrics.getValue().size();
+        rangeDataset.setRange(new Range(new DateTime(datasetHeader), new DateTime(datasetHeader).plusMinutes(range)));
 
-            tagData.setTag(metrics.getKey());
-            tagData.setAverage(new BigDecimal(average / 1000).setScale(2, RoundingMode.HALF_UP).doubleValue());
-            tagData.setCount(metrics.getValue().size());
+        averagePerSlice(rangeDataset);
 
-            rangeDataset.addToDataset(tagData);
-        }
-        metricsPerTag.clear();
         rangeDataset.getDataset().sort(new TagDataAverageAscendingComparator());
-        return rangeDataset;
+        return Lists.newArrayList(rangeDataset);
     }
 }
