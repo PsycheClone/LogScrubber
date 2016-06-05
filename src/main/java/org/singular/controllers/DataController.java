@@ -1,8 +1,10 @@
 package org.singular.controllers;
 
+import com.google.common.collect.Lists;
 import org.singular.creator.RangeChartCreator;
 import org.singular.creator.table.TableChartCreator;
 import org.singular.dto.RangeDataset;
+import org.singular.dto.TableRangeDataset;
 import org.singular.files.FileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +42,17 @@ public class DataController {
     }
 
     @RequestMapping("tablechart")
-    public List<RangeDataset> tablechart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="range") int range)throws IOException, InterruptedException {
+    public TableRangeDataset tablechart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="range") int range)throws IOException, InterruptedException {
         LOGGER.info("Tablechart request for " + host + " from: " + from);
         String formattedTime = from.replace(" ", "T");
-        return tableChartCreator.create(host, formattedTime, range);
+        TableRangeDataset tableRangeDataset = new TableRangeDataset();
+        tableRangeDataset.setRangeDatasets(tableChartCreator.create(host, formattedTime, range));
+        return tableRangeDataset;
+    }
+
+    @RequestMapping("environments")
+    public List<String> environments() {
+        return Lists.newArrayList(fileManager.getAllHosts());
     }
 
     @RequestMapping("ranges")

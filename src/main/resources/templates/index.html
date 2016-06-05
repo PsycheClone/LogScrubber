@@ -14,10 +14,12 @@
     <script th:src="@{bower_components/bootstrap/dist/js/bootstrap.js}"/>
     <script th:src="@{bower_components/moment/moment.js}"/>
     <script th:src="@{bower_components/bootstrap/js/transition.js}"/>
-    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <script th:src="@{bower_components/handlebars/handlebars.js}"/>
+    <script th:src="@{tableChart.js}"/>
+    <script th:src="@{bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js}"/>
 
-    <link th:href="@{bower_components/bootstrap/dist/css/bootstrap-melexis-branding.css}" media='screen' rel='stylesheet' type='text/css'/>
+    <link th:href="@{melexis_bootstrap/bootstrap.css}" media='screen' rel='stylesheet' type='text/css'/>
+    <link th:href="@{bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css}" media='screen' rel='stylesheet' type='text/css'/>
     <link th:href="@{css/style.css}" rel='stylesheet' type='text/css'/>
 
 </head>
@@ -43,11 +45,18 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav availablehosts">
                 <li class="navbar-right">
-                    <form class="navbar-form navbar-right">
+                    <form id="selectorForm" class="navbar-form navbar-right" name="headerForm">
+                        <select id="environment" class="form-control" name="fEnvironment">
+                        </select>
                         <div class="form-group">
-                            <input class="form-control" type="text" name="daterange" value="01/01/2015 1:30 PM - 01/01/2015 2:00 PM" />
+                            <div class='input-group date' id='datetimepicker'>
+                                <input type='text' class="form-control" name="fDate"/>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                         </div>
-                        <button type="button" class="btn btn-info">Get</button>
+                        <button id="submitForm" type="button" class="btn btn-success">Get</button>
                     </form>
                 </li>
             </ul>
@@ -56,33 +65,59 @@
 </nav>
 
 <div class="vertical-container">
-    <div class="row" th:each="host, index : ${hosts}">
-        <div class="col-xs-6 col-sm-4"></div>
-        <div class="col-xs-6 col-sm-4 text-center">
-            <a class="btn btn-primary host" th:href="@{barchart/{host}(host=${host})}"><span th:text="${host}"></span></a>
+    <div class="row">
+        <div class="col-xs-2 col-sm-2"></div>
+        <div class="col-xs-6 col-sm-8">
+            <div id="tableContainer"></div>
         </div>
-        <div class="col-xs-6 col-sm-4"></div>
+        <div class="col-xs-2 col-sm-2"></div>
     </div>
-
-    <hr/>
 </div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="text-muted">&copy; Singular</p>
-    </div>
-</footer>
-
 <script type="text/javascript">
-    $(function() {
-        $('input[name="daterange"]').daterangepicker({
-            timePicker: true,
-            timePickerIncrement: 30,
-            locale: {
-                format: 'MM/DD/YYYY h:mm A'
+    $(function () {
+        $.get("http://localhost:8090/environments", function(data) {
+            for(var i in data) {
+                $("#environment").append("<option>" + data[i] + "</option>");
             }
         });
+        
+        var date = new Date();
+        $('#datetimepicker').datetimepicker({
+            format: "YYYY-MM-DD HH:mm",
+            defaultDate: date
+        });
+
+        $("#submitForm").click(function() {
+            var formComponents = $("#selectorForm").serializeArray();
+            date = formComponents[1].value;
+            generateDatasetTables(formComponents[0].value, date);
+        });
     });
+</script>
+
+<script id="tableDatasetTemplate" type="text/x-handlebars-template">
+    {{#each rangeDatasets}}
+    <div class="panel panel-default">
+        <div class="panel-heading">{{range}}</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover datasetTable">
+                <tr>
+                    <th>Tag</th>
+                    <th>Average</th>
+                    <th>Count</th>
+                </tr>
+                {{#each dataset}}
+                    <tr>
+                        <td>{{tag}}</td>
+                        <td>{{average}}</td>
+                        <td>{{count}}</td>
+                    </tr>
+                {{/each}}
+            </table>
+        </div>
+    </div>
+    {{/each}}
 </script>
 </body>
 </html>

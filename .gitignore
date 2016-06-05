@@ -7,3 +7,4 @@ target/*
 *SNAPSHOT.jar
 *.releaseBackup
 release.properties
+bower_components

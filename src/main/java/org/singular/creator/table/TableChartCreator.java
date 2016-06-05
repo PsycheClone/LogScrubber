@@ -17,7 +17,7 @@ public class TableChartCreator extends AbstractCreator<RangeDataset> {
 
     @Override
     protected List<File> getLogs(String host, String from, int range) throws IOException {
-        return fileManager.getFilteredFilesBeforeAndAfter(host, from, range);
+        return fileManager.getFilteredFilesWithinRange(host, from, range);
     }
 
     @Override
