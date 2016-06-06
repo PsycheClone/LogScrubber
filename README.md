@@ -6,7 +6,6 @@ At the moment, this tool requires files that exclusively contain perf4j logs. So
 log4j.logger.org.perf4j.TimingLogger logs to the file you want to scrub.
 
 # 1.1
-D
 
 #### Developers
 
