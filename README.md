@@ -1,9 +1,22 @@
-# LogScrubber 1.0
+# LogScrubber
 
 #### Tool created for scrubbing perf4j logs
 
 At the moment, this tool requires files that exclusively contain perf4j logs. So make sure you only append
 log4j.logger.org.perf4j.TimingLogger logs to the file you want to scrub.
+
+# 1.1
+D
+
+#### Developers
+
+Checkout project.
+Install bower.
+Navigate to src/main/resources/static and execute "bower install"
+Make sure you create an override.properties file and place it in .logscrubber/ in your home folder.
+At the root of the project: mvn package && java -jar target/LogScrubber-1.1-SNAPSHOT.jar
+
+# 1.0
 
 #### Preparation
 
