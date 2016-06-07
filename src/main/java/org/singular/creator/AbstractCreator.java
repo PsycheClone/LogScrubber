@@ -62,18 +62,20 @@ public abstract class AbstractCreator<S extends Dataset> {
 
     protected void averagePerSlice(S dataset) {
         for(Map.Entry<String, List<Pair<DateTime, Long>>> metrics : metricsPerTag.entrySet()) {
-            TagData averageTagData = new TagData();
-            double average = 0;
-            for(Pair<DateTime, Long> pair : metrics.getValue()) {
-                average = average + pair.getValue();
+            if(metrics.getKey() != null && metrics.getValue() != null) {
+                TagData averageTagData = new TagData();
+                double average = 0;
+                for (Pair<DateTime, Long> pair : metrics.getValue()) {
+                    average = average + pair.getValue();
+                }
+                average = average / metrics.getValue().size();
+
+                averageTagData.setTag(metrics.getKey());
+                averageTagData.setAverage(new BigDecimal(average).setScale(0, RoundingMode.HALF_UP).doubleValue());
+                averageTagData.setCount(metrics.getValue().size());
+
+                dataset.addToDataset(averageTagData);
             }
-            average = average / metrics.getValue().size();
-
-            averageTagData.setTag(metrics.getKey());
-            averageTagData.setAverage(new BigDecimal(average).setScale(0, RoundingMode.HALF_UP).doubleValue());
-            averageTagData.setCount(metrics.getValue().size());
-
-            dataset.addToDataset(averageTagData);
         }
     }
 
