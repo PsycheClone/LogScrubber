@@ -1,5 +1,4 @@
 package org.singular.dto;
 
-public class TagDataset extends Dataset<TimestampData> {
-
+public class TagDataset extends Dataset<TagData> {
 }

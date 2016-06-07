@@ -1,8 +1,6 @@
 package org.singular.dto;
 
-import java.util.Comparator;
-
-public class TagData extends Data implements Comparator<TagData> {
+public class TagData extends Data {
 
     private String tag;
     private Double average;
@@ -39,11 +37,6 @@ public class TagData extends Data implements Comparator<TagData> {
 
     public void setCount(long count) {
         this.count = count;
-    }
-
-    @Override
-    public int compare(TagData d1, TagData d2) {
-        return d1.getAverage() == d2.getAverage() ? 0 : d1.getAverage() < d2.getAverage() ? -1 : 1;
     }
 
     @Override

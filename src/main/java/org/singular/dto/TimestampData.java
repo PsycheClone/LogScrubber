@@ -1,5 +1,4 @@
 package org.singular.dto;
 
-public class TimestampData extends Data {
-
+public class TimestampData {
 }
