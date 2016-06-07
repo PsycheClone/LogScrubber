@@ -2,7 +2,7 @@ package org.singular.controllers;
 
 import com.google.common.collect.Lists;
 import org.singular.creator.RangeChartCreator;
-import org.singular.creator.table.TableChartCreator;
+import org.singular.creator.TableChartCreator;
 import org.singular.dto.RangeDataset;
 import org.singular.dto.TableRangeDataset;
 import org.singular.files.FileManager;

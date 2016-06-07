@@ -30,48 +30,22 @@ body, html {
     width: 100%;
 }
 
-.jumbotron {
-    padding-bottom: 10px!important;
-    margin-bottom: 10px!important;
+.vertical-container {
+    margin-top: 20px;
+}
+
+#timepickerInput {
+    width: 300px;
 }
 
 .availablehosts {
     color: #9d9d9d;
     font-size: 18px;
-    padding: 15px 15px;
+    padding: 10px 10px 0px 0px;
 }
 
-.host {
-    width: 100%;
-    margin: 20px;
-}
-
-#rangeTitle {
-    font-family: 'Poppins', sans-serif;
-}
-
-.vertical-container {
-    margin-top: 100px;
-}
-
-#melexis_logo {
-    height: 65px;
-    width: 200px;
-    margin: 0 0 0 0;
-
-}
-
-#melexis_logo>a>img {
-    height: 100%;
-    width: 100%;
-}
-
-#melexis_logo>a {
-    height: 80px;
-    width: 200px;
-    padding: 16px;
-}
-
-#timepickerInput {
-    width: 300px;
+.navbar-brand {
+    padding: 8px 5px !important;
+    height: 70px !important;
+    margin-right: 10px !important;
 }

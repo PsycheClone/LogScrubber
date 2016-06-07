@@ -5,11 +5,11 @@ import org.joda.time.DateTime;
 import org.singular.dto.LogLine;
 import org.singular.dto.Range;
 import org.singular.dto.RangeDataset;
-import org.singular.dto.util.TagDataAverageAscendingComparator;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -32,7 +32,7 @@ public class RangeChartCreator extends AbstractCreator<RangeDataset> {
 
         averagePerSlice(rangeDataset);
 
-        rangeDataset.getDataset().sort(new TagDataAverageAscendingComparator());
+        Collections.sort(rangeDataset.getDataset());
         return Lists.newArrayList(rangeDataset);
     }
 }

@@ -1,7 +1,6 @@
-package org.singular.creator.table;
+package org.singular.creator;
 
 import org.joda.time.DateTime;
-import org.singular.creator.AbstractCreator;
 import org.singular.dto.LogLine;
 import org.singular.dto.Range;
 import org.singular.dto.RangeDataset;

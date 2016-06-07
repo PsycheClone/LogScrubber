@@ -24,7 +24,7 @@
 </head>
 
 <body>
-<nav class="navbar bg-primary">
+<nav class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -33,15 +33,18 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <div id="melexis_logo" class="navbar-header">
+            <div class="navbar-header">
                 <a class="navbar-brand" href="/">
-                    <img th:src="@{images/melexis_logoBaselineWhite.png}"/>
+                    <img th:src="@{images/little_logo.png}"/>
                 </a>
             </div>
 
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav availablehosts">
+                <li class="navbar-left">
+                    <h3>LogScrubber</h3>
+                </li>
                 <li class="navbar-right">
                     <form id="selectorForm" class="navbar-form navbar-right" name="headerForm">
                         <select id="environment" class="form-control" name="fEnvironment">
