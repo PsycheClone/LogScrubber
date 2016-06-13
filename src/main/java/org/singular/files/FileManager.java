@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -108,7 +109,7 @@ public class FileManager {
         final DateTime fromTime = new DateTime(from);
         final DateTime tillTime = fromTime.plusMinutes(range);
         List<File> filtered = getFiltered(host, fromTime, tillTime);
-
+        Collections.sort(filtered);
         return filtered;
     }
 
@@ -117,7 +118,7 @@ public class FileManager {
         final DateTime fromTime = time.minusMinutes(range);
         final DateTime tillTime = time.plusMinutes(range);
         List<File> filtered = getFiltered(host, fromTime, tillTime);
-
+        Collections.sort(filtered);
         return filtered;
     }
 
