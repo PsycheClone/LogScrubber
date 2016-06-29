@@ -15,17 +15,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
 public class LogParser {
 
-    private Logger LOGGER = LoggerFactory.getLogger(LogParser.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(LogParser.class);
 
-    private Pattern startPattern = Pattern.compile("(start\\[)(.*?)(\\])");
-    private Pattern timePattern = Pattern.compile("(time\\[)(.*?)(\\])");
-    private Pattern tagPattern = Pattern.compile("(tag\\[)(.*?)(\\])");
-    private final Pattern timestampPattern = Pattern.compile("\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+");
+    private static final Pattern startPattern = Pattern.compile("(start\\[)(.*?)(\\])");
+    private static final Pattern timePattern = Pattern.compile("(time\\[)(.*?)(\\])");
+    private static final Pattern tagPattern = Pattern.compile("(tag\\[)(.*?)(\\])");
+    private static final Pattern timestampPattern = Pattern.compile("\\d+-\\d+-\\d+\\s\\d+:\\d+:\\d+");
 
-    public List<LogLine> parseLogs(String logs) throws IOException {
+    public static List<LogLine> parseLogs(String logs) throws IOException {
         List<LogLine> logLines = new ArrayList<LogLine>();
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(logs.getBytes())));
@@ -37,7 +36,7 @@ public class LogParser {
         return logLines;
     }
 
-    private LogLine parseLogLine(String line) {
+    private static LogLine parseLogLine(String line) {
         LogLine logLine = new LogLine();
         Matcher matcher = startPattern.matcher(line);
         if(matcher.find()) {
@@ -55,7 +54,7 @@ public class LogParser {
         return logLine;
     }
 
-    public String getTimestamp(String line) {
+    public static String getTimestamp(String line) {
         Matcher matcher = timestampPattern.matcher(line);
         if(matcher.find()) {
             return matcher.group().replace(" ", "T");

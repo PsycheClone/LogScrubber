@@ -44,7 +44,7 @@ public class RangeChartCreator extends AbstractCreator<RangeDataset> {
     }
 
     @Override
-    protected List<RangeDataset> calculate(List<File> filteredFiles) throws IOException {
+    protected List<RangeDataset> calculate(List<List<File>> filteredFiles) throws IOException {
 //        List<LogLine> logLines = logParser.parseLogs(fileReader.getContent(filteredFiles));
 //        calculateMetrics(logLines);
 //

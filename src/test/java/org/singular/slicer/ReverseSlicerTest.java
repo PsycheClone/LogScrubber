@@ -1,6 +1,7 @@
 package org.singular.slicer;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,6 +15,7 @@ import java.io.*;
 
 import static org.mockito.Mockito.*;
 
+@Ignore
 public class ReverseSlicerTest extends BaseTest {
 
     @InjectMocks

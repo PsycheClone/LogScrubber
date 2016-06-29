@@ -1,0 +1,4 @@
+2016-04-16 07:56:31,531 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191497] time[34] tag[::: Dashboard/DSL/latestDevices :::]
+2016-04-16 07:57:31,555 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191531] time[24] tag[::: Dashboard/DSL/latestMachines :::]
+2016-04-16 07:58:31,883 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191555] time[328] tag[::: Dashboard/DSL/AvailabilityByDeviceAndMachine :::]
+2016-04-16 07:59:37,231 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[11] tag[ActiveMQ2ConnectionFactoryExtension/createConnection]

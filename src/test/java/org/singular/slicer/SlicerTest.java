@@ -1,6 +1,7 @@
 package org.singular.slicer;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,6 +15,7 @@ import java.io.*;
 
 import static org.mockito.Mockito.*;
 
+@Ignore
 public class SlicerTest extends BaseTest {
 
     @InjectMocks
@@ -35,7 +37,7 @@ public class SlicerTest extends BaseTest {
 
     @Test
     public void sliceLogTest() throws IOException {
-        File file = new File(testDir + "loglines4Test.log");
+        File file = new File(testDir + "creator/testHost_1460785800000_1460786100000.log");
         String firstFileName = "testHost_1460785500000_1460785800000.log";
         File firstPartToTest = new File(testDir + "slicer/slicerTestFirstPart.log");
         String secondFileName = "testHost_1460785800000_1460786100000.log";

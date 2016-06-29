@@ -113,6 +113,12 @@ public class FileManager {
         return filtered;
     }
 
+    public List<File> getFilteredFilesWithinRange(final String host, final DateTime from, final DateTime till) {
+        List<File> filtered = getFiltered(host, from, till);
+        Collections.sort(filtered);
+        return filtered;
+    }
+
     public List<File> getFilteredFilesBeforeAndAfter(final String host, final String from, int range) {
         final DateTime time = new DateTime(from);
         final DateTime fromTime = time.minusMinutes(range);
@@ -189,5 +195,29 @@ public class FileManager {
             LOGGER.debug(checkFolder + " exists.");
         }
         return checkFolder;
+    }
+
+    public boolean isDeleteOnStartup() {
+        return deleteOnStartup;
+    }
+
+    public void setDeleteOnStartup(boolean deleteOnStartup) {
+        this.deleteOnStartup = deleteOnStartup;
+    }
+
+    public int getTimeslice() {
+        return timeslice;
+    }
+
+    public void setTimeslice(int timeslice) {
+        this.timeslice = timeslice;
+    }
+
+    public String getRootDir() {
+        return rootDir;
+    }
+
+    public void setRootDir(String rootDir) {
+        this.rootDir = rootDir;
     }
 }

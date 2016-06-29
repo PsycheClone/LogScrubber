@@ -30,12 +30,6 @@ public abstract class AbstractCreator<S extends Dataset> {
     @Autowired
     protected FileManager fileManager;
 
-    @Autowired
-    protected FileReader fileReader;
-
-    @Autowired
-    protected LogParser logParser;
-
     private long min;
     private long max;
     private Map<String, List<Pair<DateTime, Long>>> metricsPerTag = new HashMap<String, List<Pair<DateTime, Long>>>();
@@ -50,7 +44,15 @@ public abstract class AbstractCreator<S extends Dataset> {
         this.slice = timeslice;
         List<File> filteredFiles = getLogs(host, from, range);
 
-        return calculate(filteredFiles);
+        return calculate(groupBySlice(filteredFiles));
+    }
+
+    public List<S> create(String host, DateTime from, DateTime till, int range) throws IOException {
+        this.range = range;
+        this.slice = timeslice;
+        List<File> filteredFiles = getLogs(host, from, till);
+
+        return calculate(groupBySlice(filteredFiles));
     }
 
     public List<S> create(String host, String from, int range, int slice) throws IOException {
@@ -58,12 +60,53 @@ public abstract class AbstractCreator<S extends Dataset> {
         this.slice = slice;
         List<File> filteredFiles = getLogs(host, from, range);
 
-        return calculate(filteredFiles);
+        return calculate(Lists.<List<File>>newArrayList(filteredFiles));
     }
 
     public List<S> create(String host, String header, String from, int range) throws IOException {
         this.datasetHeader = header;
         return create(host, from, range);
+    }
+
+    private List<List<File>> groupBySlice(List<File> files) {
+        List<List<File>> groupedBySlice = new ArrayList<List<File>>();
+        if(!files.isEmpty()) {
+            if (files.size() == 1) {
+                groupedBySlice.add(files);
+                return groupedBySlice;
+            } else {
+                DateTime start = new DateTime(fileManager.getStartParsable(files.get(0).getName()));
+                DateTime end = new DateTime(fileManager.getStartParsable(files.get(files.size() - 1).getName()));
+                long totalTime = end.getMillis() - start.getMillis();
+                int availableSlices = (int) (totalTime / 1000 / 60) / slice;
+                boolean incompleteSliceAtTheEnd = false;
+                if (totalTime % slice > 0) {
+                    incompleteSliceAtTheEnd = true;
+                }
+                for (int i = 0; i <= availableSlices; i++) {
+                    List<File> groupToAdd = new ArrayList<File>();
+                    for (File file : files) {
+                        start = new DateTime(fileManager.getStartParsable(file.getName()));
+                        end = new DateTime(fileManager.getEndParsable(file.getName()));
+                        if (end.isEqual(start.plusMinutes(slice))) {
+                            groupToAdd.add(file);
+                            files = files.subList(files.indexOf(file) + 1, files.size());
+                        } else if (end.isAfter(start.plusMinutes(slice))) {
+                            files = files.subList(files.indexOf(file), files.size());
+                        } else {
+                            groupToAdd.add(file);
+                        }
+                    }
+                    if(groupToAdd.size() > 0) {
+                        groupedBySlice.add(groupToAdd);
+                    }
+                }
+                if (incompleteSliceAtTheEnd) {
+                    groupedBySlice.add(files);
+                }
+            }
+        }
+        return groupedBySlice;
     }
 
     protected void calculateMetrics(List<LogLine> logLines) {
@@ -99,7 +142,7 @@ public abstract class AbstractCreator<S extends Dataset> {
         }
     }
 
-    protected void averagePerSlice(S dataset) {
+    protected void createAndAdd(S dataset) {
         for(Map.Entry<String, List<Pair<DateTime, Long>>> metrics : metricsPerTag.entrySet()) {
             if(metrics.getKey() != null && metrics.getValue() != null) {
                 Data data = createDataset(metrics);
@@ -118,7 +161,29 @@ public abstract class AbstractCreator<S extends Dataset> {
 
     protected abstract Data createDataset(Map.Entry<String, List<Pair<DateTime, Long>>> metrics);
 
-    protected abstract List<File> getLogs(String host, String from, int range) throws IOException;
+    protected List<File> getLogs(String host, String from, int range) throws IOException {
+        return fileManager.getFilteredFilesWithinRange(host, from, range);
+    }
 
-    protected abstract List<S> calculate(List<File> files) throws IOException;
+    protected List<File> getLogs(String host, DateTime from, DateTime till) throws IOException {
+        return fileManager.getFilteredFilesWithinRange(host, from, till);
+    }
+
+    protected abstract List<S> calculate(List<List<File>> files) throws IOException;
+
+    public int getTimeslice() {
+        return timeslice;
+    }
+
+    public void setTimeslice(int timeslice) {
+        this.timeslice = timeslice;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public void setFileManager(FileManager fileManager) {
+        this.fileManager = fileManager;
+    }
 }

@@ -8,10 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@Component
 public class FileReader {
 
-    public String getContent(List<File> files) throws IOException {
+    public static String getContent(List<File> files) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String content;
 
@@ -25,7 +24,7 @@ public class FileReader {
         return stringBuilder.toString();
     }
 
-    public String getContent(File file) throws IOException {
+    public static String getContent(File file) throws IOException {
         return getContent(Lists.newArrayList(file));
     }
 }

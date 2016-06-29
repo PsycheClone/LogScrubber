@@ -3,6 +3,8 @@ package org.singular.creator;
 import javafx.util.Pair;
 import org.joda.time.DateTime;
 import org.singular.dto.*;
+import org.singular.files.FileReader;
+import org.singular.parser.LogParser;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -42,18 +44,19 @@ public class TableChartCreator extends AbstractCreator<RangeDataset> {
     }
 
     @Override
-    protected List<RangeDataset> calculate(List<File> files) throws IOException {
+    protected List<RangeDataset> calculate(List<List<File>> filesList) throws IOException {
         List<RangeDataset> rangeDatasets = new LinkedList<RangeDataset>();
-        for(File file : files) {
-            DateTime fromTime = new DateTime(fileManager.getStartParsable(file.getName()));
-            DateTime tillTime = new DateTime(fileManager.getEndParsable(file.getName()));
-            String logs = fileReader.getContent(file);
-            List<LogLine> logLines = logParser.parseLogs(logs);
+        for(List<File> fileList : filesList) {
+            DateTime fromTime = new DateTime(fileManager.getStartParsable(fileList.get(0).getName()));
+            DateTime tillTime = new DateTime(fileManager.getEndParsable(fileList.get(fileList.size()-1).getName()));
+
+            String logs = FileReader.getContent(fileList);
+            List<LogLine> logLines = LogParser.parseLogs(logs);
             calculateMetrics(logLines);
 
             RangeDataset rangeDataset = new RangeDataset();
             rangeDataset.setRange(new Range(fromTime, tillTime));
-            averagePerSlice(rangeDataset);
+            createAndAdd(rangeDataset);
             rangeDatasets.add(rangeDataset);
         }
         return rangeDatasets;

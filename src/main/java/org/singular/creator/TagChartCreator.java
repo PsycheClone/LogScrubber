@@ -23,7 +23,7 @@ public class TagChartCreator extends AbstractCreator<TagDataset> {
     }
 
     @Override
-    protected List<TagDataset> calculate(List<File> files) throws IOException {
+    protected List<TagDataset> calculate(List<List<File>> files) throws IOException {
         return null;
     }
 }

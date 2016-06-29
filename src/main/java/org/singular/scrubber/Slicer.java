@@ -23,8 +23,7 @@ public class Slicer {
     @Value("${timeslice}")
     private int timeslice;
 
-    @Autowired
-    private LogParser logParser;
+    private LogParser logParser = new LogParser();
 
     @Autowired
     private FileManager fileManager;
