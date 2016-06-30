@@ -17,8 +17,9 @@
   ],
   "dependencies": {
     "bootstrap": "^3.3.6",
-    "eonasdan-bootstrap-datetimepicker": "^4.17.37",
     "handlebars": "^4.0.5",
-    "moment": "^2.13.0"
+    "moment": "^2.13.0",
+    "bootstrap-daterangepicker": "^2.1.23",
+    "jquery-textfill": "^0.6.0"
   }
 }

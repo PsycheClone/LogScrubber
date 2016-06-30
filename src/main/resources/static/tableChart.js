@@ -73,8 +73,8 @@ function filterTags(query) {
     renderTables(filtered);
 }
 
-function generateDatasetTables(host, from) {
-    $.get("http://localhost:8090/tablechart?host=" + host +"&from=" + from + "&range=60", function(data) {
+function generateDatasetTables(host, from, till, slice) {
+    $.get("http://localhost:8090/tablechart?host=" + host +"&from=" + from + "&till=" + till + "&slice=" + slice, function(data) {
         dataset = data;
         if(typeof dataset.rangeDatasets !== 'undefined' && dataset.rangeDatasets.length > 0) {
             $("#filterForm").show();
@@ -82,5 +82,7 @@ function generateDatasetTables(host, from) {
             $("#filterForm").hide();
         }
         renderTables(dataset);
+        $("#loaderspinner").hide();
+        $("#tableContainer").show();
     });
 }

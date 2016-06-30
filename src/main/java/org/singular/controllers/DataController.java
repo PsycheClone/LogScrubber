@@ -1,9 +1,8 @@
 package org.singular.controllers;
 
 import com.google.common.collect.Lists;
-import org.singular.creator.RangeChartCreator;
+import org.joda.time.DateTime;
 import org.singular.creator.TableChartCreator;
-import org.singular.dto.RangeDataset;
 import org.singular.dto.TableRangeDataset;
 import org.singular.files.FileManager;
 import org.slf4j.Logger;
@@ -27,27 +26,18 @@ public class DataController {
     private FileManager fileManager;
 
     @Autowired
-    private RangeChartCreator rangeChartCreator;
-
-    @Autowired
     private TableChartCreator tableChartCreator;
 
     private Logger LOGGER = LoggerFactory.getLogger(DataController.class);
 
-    @RequestMapping("json")
-    public RangeDataset perf4jBarchart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="slice") int slice)throws IOException, InterruptedException {
-        LOGGER.info("Barchart request for " + host + " from: " + from + " range: " + slice);
-        String formattedTime = from.replace(" ", "T");
-        return rangeChartCreator.create(host, formattedTime, formattedTime, slice).get(0);
-    }
-
     @RequestMapping("tablechart")
-    public TableRangeDataset tablechart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="range") int range)throws IOException, InterruptedException {
-        LOGGER.info("Tablechart request for " + host + " from: " + from);
+    public TableRangeDataset tablechart(@RequestParam(value="host") String host, @RequestParam(value="from") String from, @RequestParam(value="till") String till, @RequestParam(value="slice") int slice)throws IOException, InterruptedException {
+        LOGGER.info("Tablechart request for " + host + " from: " + from + " till: " + till);
         String formattedTime = from.replace(" ", "T");
-        TableRangeDataset tableRangeDataset = new TableRangeDataset();
-        tableRangeDataset.setRangeDatasets(tableChartCreator.create(host, formattedTime, range));
-        return tableRangeDataset;
+        DateTime fromTime = new DateTime(formattedTime);
+        formattedTime = till.replace(" ", "T");
+        DateTime tillTime = new DateTime(formattedTime);
+        return tableChartCreator.create(host, fromTime, tillTime, slice);
     }
 
     @RequestMapping("environments")

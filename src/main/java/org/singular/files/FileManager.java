@@ -32,7 +32,7 @@ public class FileManager {
 
     private String rootDir = System.getProperty("user.home") + "/logs/";
 
-    private DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    private static DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     private Logger LOGGER = LoggerFactory.getLogger(FileManager.class);
 
@@ -162,27 +162,27 @@ public class FileManager {
         return splitFileName(fileName)[0];
     }
 
-    public String getStart(String fileName) {
+    public static String getStart(String fileName) {
         return formatToDateTimeString(splitFileName(fileName)[1]);
     }
 
-    public String getEnd(String fileName) {
+    public static String getEnd(String fileName) {
        return formatToDateTimeString(splitFileName(fileName)[2].substring(0, splitFileName(fileName)[2].indexOf(".log")));
     }
 
-    public String getStartParsable(String fileName) {
+    public static String getStartParsable(String fileName) {
         return getStart(fileName).replace(" ", "T");
     }
 
-    public String getEndParsable(String fileName) {
+    public static String getEndParsable(String fileName) {
         return getEnd(fileName).replace(" ", "T");
     }
 
-    private String[] splitFileName(String fileName) {
+    private static String[] splitFileName(String fileName) {
         return fileName.split("_");
     }
 
-    private String formatToDateTimeString(String millis) {
+    private static String formatToDateTimeString(String millis) {
         return fmt.print(new DateTime(Long.valueOf(millis)));
     }
 

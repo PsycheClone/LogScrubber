@@ -38,8 +38,12 @@ body, html {
     margin-top: 20px;
 }
 
-#timepickerInput {
+#daterange {
     width: 300px;
+}
+
+#slice {
+    width: 60px;
 }
 
 .availablehosts {
@@ -52,4 +56,49 @@ body, html {
     padding: 8px 5px !important;
     height: 70px !important;
     margin-right: 10px !important;
+}
+
+#placeholderContainer {
+    color: #b2c4cb;
+    height: 600px;
+}
+
+#placeholderContainer div {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#placeholderContainer div span {
+    text-align: center;
+    display: block;
+}
+
+#loaderspinner div {
+    color: #b2c4cb;
+    width: 240px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#welcomeMessage {
+}
+
+/*spinning loader*/
+
+.glyphicon-refresh-animate {
+    margin-top: 100px;
+    font-size: 240px;
+    -animation: spin 1.7s infinite linear;
+    -webkit-animation: spin2 1.7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
 }
