@@ -3,11 +3,12 @@
   <groupId>org.singular</groupId>
   <artifactId>LogScrubber</artifactId>
   <packaging>jar</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <name>LogScrubber</name>
 
   <scm>
     <connection>scm:git:https://github.com/PsycheClone/LogScrubber.git</connection>
+    <tag>HEAD</tag>
   </scm>
 
   <parent>

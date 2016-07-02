@@ -2,7 +2,7 @@
 .idea/*
 *.iml
 logs/*
-target/*
+target/
 !*.jar
 *SNAPSHOT.jar
 *.releaseBackup
