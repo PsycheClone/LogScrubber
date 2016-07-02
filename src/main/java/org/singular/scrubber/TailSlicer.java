@@ -16,9 +16,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 
-@Component("slicer")
+@Component("tailSlicer")
 @Scope("prototype")
-public class Slicer {
+public class TailSlicer {
 
     @Value("${timeslice}")
     private int timeslice;
@@ -36,9 +36,9 @@ public class Slicer {
     private DateTime timer;
     private List<String> reservoir = new LinkedList<String>();
 
-    private Logger LOGGER = LoggerFactory.getLogger(Slicer.class);
+    private Logger LOGGER = LoggerFactory.getLogger(TailSlicer.class);
 
-    public Slicer() {
+    public TailSlicer() {
     }
 
     public void process(String line) throws IOException {

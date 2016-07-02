@@ -43,11 +43,13 @@ public class Scrubber implements BeanFactoryAware {
             LOGGER.info("Starting Scrubber.");
             for (final Map.Entry<String, String> appLocation : APPS.entrySet()) {
 
-                Slicer slicer = createSlicer(appLocation.getKey(), true);
-                TailerListener tailerListener = new FileTailer(slicer);
+                // Start tailer
+                TailSlicer tailSlicer = createSlicer(appLocation.getKey(), true);
+                TailerListener tailerListener = new FileTailer(tailSlicer);
                 LOGGER.info("Starting Tailer on " + appLocation.getKey() + " logs...");
                 Tailer.create(new File(appLocation.getValue()), tailerListener, 50L, true);
 
+                // Start scrubbing the whole file back to front
                 Thread thread = new Thread(new Runnable() {
                     public void run() {
                         try {
@@ -80,11 +82,11 @@ public class Scrubber implements BeanFactoryAware {
         LOGGER.info("Connector for " + name + " disconnected.");
     }
 
-    private Slicer createSlicer(String name, boolean tailer) {
-        Slicer slicer = (Slicer) beanFactory.getBean("slicer");
-        slicer.setHost(name);
-        slicer.setTailer(tailer);
-        return slicer;
+    private TailSlicer createSlicer(String name, boolean tailer) {
+        TailSlicer tailSlicer = (TailSlicer) beanFactory.getBean("tailSlicer");
+        tailSlicer.setHost(name);
+        tailSlicer.setTailer(tailer);
+        return tailSlicer;
     }
 
     private ReverseSlicer createReverseSlicer(String name, boolean tailer) {

@@ -84,5 +84,10 @@ function generateDatasetTables(host, from, till, slice) {
         renderTables(dataset);
         $("#loaderspinner").hide();
         $("#tableContainer").show();
+        $(".datasetTable").dataTable({
+            paging: false,
+            searching: false,
+            info: false
+        });
     });
 }

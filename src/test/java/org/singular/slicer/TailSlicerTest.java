@@ -9,17 +9,17 @@ import org.mockito.MockitoAnnotations;
 import org.singular.BaseTest;
 import org.singular.files.FileManager;
 import org.singular.parser.LogParser;
-import org.singular.scrubber.Slicer;
+import org.singular.scrubber.TailSlicer;
 
 import java.io.*;
 
 import static org.mockito.Mockito.*;
 
 @Ignore
-public class SlicerTest extends BaseTest {
+public class TailSlicerTest extends BaseTest {
 
     @InjectMocks
-    private Slicer slicer;
+    private TailSlicer tailSlicer;
 
     @Mock
     private LogParser logParser;
@@ -30,9 +30,9 @@ public class SlicerTest extends BaseTest {
     @Before
     public void before() {
         MockitoAnnotations.initMocks(this);
-        slicer.setHost("testHost");
-        slicer.setTailer(true);
-        slicer.setTimeslice(5);
+        tailSlicer.setHost("testHost");
+        tailSlicer.setTailer(true);
+        tailSlicer.setTimeslice(5);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class SlicerTest extends BaseTest {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(content.getBytes())));
         String line;
         while((line = bufferedReader.readLine()) != null) {
-            slicer.process(line);
+            tailSlicer.process(line);
         }
 
         verify((fileManager), times(1)).storeFile(secondFileName, getContent(secondPartToTest));

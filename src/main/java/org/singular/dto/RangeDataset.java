@@ -15,9 +15,9 @@ public class RangeDataset extends Dataset implements Comparable<RangeDataset> {
     public RangeDataset() {
     }
 
-    public RangeDataset(Range range, List<TagData> logLines) {
+    public RangeDataset(Range range, List<TagData> tagDatas) {
         this.range = range;
-        this.dataset = logLines;
+        this.dataset = tagDatas;
     }
 
     public Range getRange() {
