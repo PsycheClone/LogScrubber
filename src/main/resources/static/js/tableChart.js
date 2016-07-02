@@ -56,23 +56,6 @@ function renderTables(data) {
     colorTables();
 }
 
-function filterTags(query) {
-    var filtered = {};
-    var rangeDatasets = $.extend(true, [], dataset.rangeDatasets);
-    for(var i = 0; i < rangeDatasets.length; i++) {
-        var datasets = rangeDatasets[i].dataset;
-        var j = datasets.length;
-        while(j--) {
-            var tag = datasets[j].tag;
-            if(tag.toLowerCase().indexOf(query.toLowerCase()) < 0) {
-                datasets.splice(j, 1);
-            }
-        }
-    }
-    filtered.rangeDatasets = rangeDatasets;
-    renderTables(filtered);
-}
-
 function generateDatasetTables(host, from, till, slice) {
     $.get("http://localhost:8090/tablechart?host=" + host +"&from=" + from + "&till=" + till + "&slice=" + slice, function(data) {
         dataset = data;
@@ -91,3 +74,17 @@ function generateDatasetTables(host, from, till, slice) {
         });
     });
 }
+
+$(function() {
+    $("#selectorFormSubmit").click(function() {
+        $("#tableContainer").hide();
+        $("#placeholderContainer").hide();
+        $("#loaderspinner").show();
+
+        var formComponents = $("#selectorForm").serializeArray();
+        var fromTill = formComponents[1].value.split(" - ");
+        var from = fromTill[0];
+        var till = fromTill[1];
+        generateDatasetTables(formComponents[0].value, from, till, formComponents[2].value);
+    });
+})
