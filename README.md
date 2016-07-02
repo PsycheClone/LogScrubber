@@ -2,8 +2,16 @@
 
 #### Tool created for scrubbing perf4j logs
 
-At the moment, this tool requires files that exclusively contain perf4j logs. So make sure you only append
-log4j.logger.org.perf4j.TimingLogger logs to the file you want to scrub.
+At the moment, this tool requires files that exclusively contain perf4j logs. Use this config snippet in your application.  What is important here is that ONLY perf4j logging is appended to a single file.  And the Conversion pattern, because these lines will be parsed and will expect this particular pattern.
+
+  # perf4j appender
+  log4j.appender.perf=org.apache.log4j.FileAppender
+  log4j.appender.perf.File=${karaf.data}/log/perf4j.log
+  log4j.appender.perf.layout=org.apache.log4j.PatternLayout
+  log4j.appender.perf.layout.ConversionPattern=%d | %-5.5p | %-16.16t | %-32.32c{1} | %X{bundle.id} - %X{bundle.name} - %X{bundle.version} | %m%n
+  log4j.appender.perf.append=true
+  log4j.additivity.org.perf4j = false
+  log4j.logger.org.perf4j = INFO, perf
 
 #### Developers
 
@@ -36,9 +44,14 @@ log.locations[x]=AppName:/path/to/perf4j.log
 #### How it works
 
 For every given location two things will happen.
+
 Firstly, a FileTailer will open the logfile and start tailing it, saving slices every interval of the desired "timeslice" parameter and store them in the user home /logs folder.
+
 Secondly, a thread will be started, which will read the file line per line backwards, starting from the last line.
+
 The logs will be sliced according to the expected timeslice property and store them in the user home /logs folder.
+
+#### Using the UI
 
 To view the logs navigate to localhost:8090
 
