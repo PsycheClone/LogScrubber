@@ -2,8 +2,11 @@
 
 #### Tool created for scrubbing perf4j logs
 
-At the moment, this tool requires files that exclusively contain perf4j logs. Use this config snippet in your application.  What is important here is that ONLY perf4j logging is appended to a single file.  And the Conversion pattern, because these lines will be parsed and will expect this particular pattern.
+At the moment, this tool requires files that exclusively contain perf4j logs.
 
+Use this next config snippet in your application.  What is important here is that ONLY perf4j logging is appended to a single file.  And the Conversion pattern, because these lines will be parsed and will expect this particular pattern.
+
+  ```
   # perf4j appender
   log4j.appender.perf=org.apache.log4j.FileAppender
   log4j.appender.perf.File=${karaf.data}/log/perf4j.log
@@ -12,6 +15,7 @@ At the moment, this tool requires files that exclusively contain perf4j logs. Us
   log4j.appender.perf.append=true
   log4j.additivity.org.perf4j = false
   log4j.logger.org.perf4j = INFO, perf
+  ```
 
 #### Developers
 
