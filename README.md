@@ -45,7 +45,7 @@ deleteOnStartup (Wether or not the tool should clear the existing logs folder.  
 
 log.locations[x]=AppName:/path/to/perf4j.log
 
-*x = inremental (0, 1, 2, ...*
+*x = incremental (0, 1, 2, ...)*
 
 #### How it works
 
