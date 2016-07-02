@@ -23,8 +23,6 @@ Checkout project.
 
 Install bower.
 
-Navigate to src/main/resources/static and execute "bower install"
-
 Make sure you create an override.properties file and place it in .logscrubber/ in your home folder.
 
 At the root of the project: mvn package && java -jar target/LogScrubber-1.1-SNAPSHOT.jar
