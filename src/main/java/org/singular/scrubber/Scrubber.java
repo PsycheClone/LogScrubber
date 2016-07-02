@@ -44,7 +44,7 @@ public class Scrubber implements BeanFactoryAware {
             for (final Map.Entry<String, String> appLocation : APPS.entrySet()) {
 
                 // Start tailer
-                TailSlicer tailSlicer = createSlicer(appLocation.getKey(), true);
+                TailSlicer tailSlicer = createSlicer(appLocation.getKey());
                 TailerListener tailerListener = new FileTailer(tailSlicer);
                 LOGGER.info("Starting Tailer on " + appLocation.getKey() + " logs...");
                 Tailer.create(new File(appLocation.getValue()), tailerListener, 50L, true);
@@ -69,7 +69,7 @@ public class Scrubber implements BeanFactoryAware {
     private void retrieveLocalLogs(String name, String path) throws IOException {
         LocalConnector connector = new LocalConnector();
         BufferedReader reader = connector.readFileBackwards(path);
-        ReverseSlicer slicer = createReverseSlicer(name, false);
+        ReverseSlicer slicer = createReverseSlicer(name);
         String line;
 
         LOGGER.info("Starting to read from " + name);
@@ -82,17 +82,15 @@ public class Scrubber implements BeanFactoryAware {
         LOGGER.info("Connector for " + name + " disconnected.");
     }
 
-    private TailSlicer createSlicer(String name, boolean tailer) {
+    private TailSlicer createSlicer(String name) {
         TailSlicer tailSlicer = (TailSlicer) beanFactory.getBean("tailSlicer");
         tailSlicer.setHost(name);
-        tailSlicer.setTailer(tailer);
         return tailSlicer;
     }
 
-    private ReverseSlicer createReverseSlicer(String name, boolean tailer) {
+    private ReverseSlicer createReverseSlicer(String name) {
         ReverseSlicer slicer = (ReverseSlicer) beanFactory.getBean("reverseSlicer");
         slicer.setHost(name);
-        slicer.setTailer(tailer);
         return slicer;
     }
 

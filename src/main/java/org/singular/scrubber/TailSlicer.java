@@ -116,4 +116,12 @@ public class TailSlicer {
     public void setTimeslice(int timeslice) {
         this.timeslice = timeslice;
     }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public void setFileManager(FileManager fileManager) {
+        this.fileManager = fileManager;
+    }
 }

@@ -1,4 +1,0 @@
-2016-04-16 07:51:37,230 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[10] tag[ActiveMQ2ConnectionFactoryExtension/createConnection]
-2016-04-16 07:52:37,231 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[11] tag[ActiveMQ2ConnectionFactoryExtension/createConnection]
-2016-04-16 07:53:37,247 | INFO  | handled.ape.pnt] | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897242] time[5] tag[ActiveMQ2ConnectionExtension/createConnection]
-2016-04-16 07:54:45,015 | INFO  | ovetransactions] | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785905004] time[11] tag[ActiveMQ2ConnectionExtension/createDoodoo]

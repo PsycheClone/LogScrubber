@@ -1,74 +1,68 @@
 package org.singular.slicer;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.singular.BaseTest;
 import org.singular.files.FileManager;
-import org.singular.parser.LogParser;
+import org.singular.files.FileReader;
 import org.singular.scrubber.TailSlicer;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
 
-@Ignore
 public class TailSlicerTest extends BaseTest {
 
-    @InjectMocks
-    private TailSlicer tailSlicer;
-
-    @Mock
-    private LogParser logParser;
-
-    @Mock
-    private FileManager fileManager;
+    private TailSlicer tailSlicer = new TailSlicer();
+    private FileManager fileManager = new FileManager();
 
     @Before
     public void before() {
-        MockitoAnnotations.initMocks(this);
+        fileManager.setRootDir(testDir + "/slicer");
         tailSlicer.setHost("testHost");
-        tailSlicer.setTailer(true);
         tailSlicer.setTimeslice(5);
+        tailSlicer.setFileManager(fileManager);
+    }
+
+    @After
+    public void after() throws IOException {
+        List<File> files = fileManager.getFilteredFiles("testHost");
+        for(File file : files) {
+            file.delete();
+        }
     }
 
     @Test
     public void sliceLogTest() throws IOException {
-        File file = new File(testDir + "creator/testHost_1460785800000_1460786100000.log");
-        String firstFileName = "testHost_1460785500000_1460785800000.log";
-        File firstPartToTest = new File(testDir + "slicer/slicerTestFirstPart.log");
-        String secondFileName = "testHost_1460785800000_1460786100000.log";
-        File secondPartToTest = new File(testDir + "slicer/slicerTestSecondPart.log");
-        String content = getContent(file);
+        String logs = FileReader.getContent(new File(testDir + "/slicer/tailerSlicerLoglines.log"));
+        BufferedReader reader = new BufferedReader(new StringReader(logs));
 
-        when(logParser.getTimestamp("2016-04-16 07:49:37,230 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[10] tag[To Complete the slice]"))
-                .thenReturn("2016-04-16T07:49:37");
-        when(logParser.getTimestamp("2016-04-16 07:51:37,230 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[10] tag[ActiveMQ2ConnectionFactoryExtension/createConnection]"))
-            .thenReturn("2016-04-16T07:51:37");
-        when(logParser.getTimestamp("2016-04-16 07:52:37,231 | INFO  | xtenderThread-32 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897220] time[11] tag[ActiveMQ2ConnectionFactoryExtension/createConnection]"))
-                .thenReturn("2016-04-16T07:52:37");
-        when(logParser.getTimestamp("2016-04-16 07:53:37,247 | INFO  | handled.ape.pnt] | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785897242] time[5] tag[ActiveMQ2ConnectionExtension/createConnection]"))
-                .thenReturn("2016-04-16T07:53:37");
-        when(logParser.getTimestamp("2016-04-16 07:54:45,015 | INFO  | ovetransactions] | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460785905004] time[11] tag[ActiveMQ2ConnectionExtension/createDoodoo]"))
-                .thenReturn("2016-04-16T07:54:45");
-
-        when(logParser.getTimestamp("2016-04-16 07:56:31,531 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191497] time[34] tag[::: Dashboard/DSL/latestDevices :::]"))
-                .thenReturn("2016-04-16T07:56:31");
-        when(logParser.getTimestamp("2016-04-16 07:58:31,555 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191531] time[24] tag[::: Dashboard/DSL/latestMachines :::]"))
-                .thenReturn("2016-04-16T07:58:31");
-        when(logParser.getTimestamp("2016-04-16 07:59:31,883 | INFO  | qtp914170664-517 | TimingLogger                     | 72 - org.apache.servicemix.bundles.perf4j - 0.9.13.1 | start[1460786191555] time[328] tag[::: Dashboard/DSL/AvailabilityByDeviceAndMachine :::]"))
-                .thenReturn("2016-04-16T07:59:31");
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(content.getBytes())));
         String line;
-        while((line = bufferedReader.readLine()) != null) {
+        while ((line = reader.readLine()) != null) {
             tailSlicer.process(line);
         }
 
-        verify((fileManager), times(1)).storeFile(secondFileName, getContent(secondPartToTest));
-        verify((fileManager), times(1)).storeFile(firstFileName, getContent(firstPartToTest));
+        List<File> files = fileManager.getFilteredFiles("testHost");
+        assertEquals(3, files.size());
+
+        String firstLogStart = FileManager.getStartParsable(files.get(0).getName());
+        String firstLogEnd = FileManager.getEndParsable(files.get(0).getName());
+        assertEquals("2016-06-20T15:45:00", firstLogStart);
+        assertEquals("2016-06-20T15:50:00", firstLogEnd);
+
+        String secondLogStart = FileManager.getStartParsable(files.get(1).getName());
+        String secondLogEnd = FileManager.getEndParsable(files.get(1).getName());
+        assertEquals("2016-06-20T15:50:00", secondLogStart);
+        assertEquals("2016-06-20T15:55:00", secondLogEnd);
+
+        String thirdLogStart = FileManager.getStartParsable(files.get(2).getName());
+        String thirdLogEnd = FileManager.getEndParsable(files.get(2).getName());
+        assertEquals("2016-06-20T15:55:00", thirdLogStart);
+        assertEquals("2016-06-20T16:00:00", thirdLogEnd);
     }
 }
