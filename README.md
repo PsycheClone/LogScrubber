@@ -4,12 +4,12 @@
 
 At the moment, this tool requires files that exclusively contain perf4j logs.
 
-Use this next config snippet in your application.  What is important here is that ONLY perf4j logging is appended to a single file.  And the Conversion pattern, because these lines will be parsed and will expect this particular pattern.
+Use this next config snippet in your application.  What is important here is that ONLY perf4j logging is appended to a single file.  And also the ConversionPattern.  These loglines will be parsed using regex and will expect this particular pattern.
 
   ```
   # perf4j appender
   log4j.appender.perf=org.apache.log4j.FileAppender
-  log4j.appender.perf.File=${karaf.data}/log/perf4j.log
+  log4j.appender.perf.File={Path to log folder}/log/perf4j.log
   log4j.appender.perf.layout=org.apache.log4j.PatternLayout
   log4j.appender.perf.layout.ConversionPattern=%d | %-5.5p | %-16.16t | %-32.32c{1} | %X{bundle.id} - %X{bundle.name} - %X{bundle.version} | %m%n
   log4j.appender.perf.append=true

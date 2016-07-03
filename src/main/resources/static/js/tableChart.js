@@ -104,4 +104,4 @@ $(function() {
         var till = fromTill[1];
         generateDatasetTables(formComponents[0].value, from, till, formComponents[2].value);
     });
-})
+});
