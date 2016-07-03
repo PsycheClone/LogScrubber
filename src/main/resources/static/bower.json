@@ -22,6 +22,7 @@
     "bootstrap-daterangepicker": "^2.1.23",
     "jquery-textfill": "^0.6.0",
     "datatables.net": "^1.10.12",
-    "datatables": "^1.10.12"
+    "datatables": "^1.10.12",
+    "noty": "^2.3.8"
   }
 }

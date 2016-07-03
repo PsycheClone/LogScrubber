@@ -18,6 +18,7 @@
     <script th:src="@{bower_components/bootstrap-daterangepicker/daterangepicker.js}"/>
     <script th:src="@{bower_components/jquery-textfill/source/jquery.textfill.js}"/>
     <script th:src="@{bower_components/datatables.net/js/jquery.dataTables.js}"/>
+    <script th:src="@{bower_components/noty/js/noty/packaged/jquery.noty.packaged.js}"/>
 
     <script th:src="@{js/tableChart.js}"/>
     <script th:src="@{js/welcomeMessage.js}"/>
@@ -29,10 +30,11 @@
 
     <link th:href="@{melexis_bootstrap/bootstrap.css}" media='screen' rel='stylesheet' type='text/css'/>
     <link th:href="@{css/style.css}" rel='stylesheet' type='text/css'/>
+    <link th:href="@{css/animate.css}" rel='stylesheet' type='text/css'/>
 </head>
 
 <body>
-<nav class="navbar navbar-inverse" style="border-radius:0px !important">
+<nav class="navbar navbar-inverse" style="border-radius:0px !important; margin-bottom: 5px !important;">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -73,6 +75,14 @@
         </div>
     </div>
 </nav>
+
+<div class="vertical-container" style="width: 100%;">
+    <div class="row">
+        <div class="col-xs-2 col-sm-2"></div>
+        <div id="notifyContainer" class="col-xs-6 col-sm-8"></div>
+        <div class="col-xs-2 col-sm-2"></div>
+    </div>
+</div>
 
 <div class="vertical-container">
     <div class="row">

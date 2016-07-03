@@ -52,27 +52,44 @@ function renderTables(data) {
     var template = Handlebars.compile($("#tableDatasetTemplate").html());
     var html = template(data);
     $("#tableContainer").append(html);
-
+    $(".datasetTable").dataTable({
+        paging: false,
+        searching: false,
+        info: false
+    });
     colorTables();
 }
 
 function generateDatasetTables(host, from, till, slice) {
-    $.get("http://localhost:8090/tablechart?host=" + host +"&from=" + from + "&till=" + till + "&slice=" + slice, function(data) {
-        dataset = data;
-        if(typeof dataset.rangeDatasets !== 'undefined' && dataset.rangeDatasets.length > 0) {
-            $("#filterForm").show();
-        } else {
+    var jqxhr = $.get("http://localhost:8090/tablechart?host=" + host +"&from=" + from + "&till=" + till + "&slice=" + slice, function(data) {
+    })
+        .done(function(data) {
+            dataset = data;
+            if (typeof dataset.rangeDatasets !== 'undefined' && dataset.rangeDatasets.length > 0) {
+                $("#filterForm").show();
+            } else {
+                $("#filterForm").hide();
+            }
+            renderTables(dataset);
+            $("#loaderspinner").hide();
+            $("#tableContainer").show();
+        })
+        .fail(function(data) {
             $("#filterForm").hide();
-        }
-        renderTables(dataset);
-        $("#loaderspinner").hide();
-        $("#tableContainer").show();
-        $(".datasetTable").dataTable({
-            paging: false,
-            searching: false,
-            info: false
-        });
-    });
+            $("#loaderspinner").hide();
+            $("#placeholderContainer").show();
+            var n = $("#notifyContainer").noty({
+                layout: 'topCenter',
+                timeout: 10000,
+                type: 'error',
+                text: data.responseText,
+                animation: {
+                    open: 'animated fadeInDown', // Animate.css class names
+                    close: 'animated fadeOutDown', // Animate.css class names
+                    easing: 'swing', // unavailable - no need
+                    speed: 500 // opening & closing animation speed
+                }});
+        })
 }
 
 $(function() {
