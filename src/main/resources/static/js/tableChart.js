@@ -69,7 +69,19 @@ function generateDatasetTables(host, from, till, slice) {
             if (typeof dataset.rangeDatasets !== 'undefined' && dataset.rangeDatasets.length > 0) {
                 $("#filterForm").show();
             } else {
+                var n = $("#notifyContainer").noty({
+                    layout: 'topCenter',
+                    timeout: 10000,
+                    type: 'information',
+                    text: "No data found for this range.",
+                    animation: {
+                        open: 'animated fadeInDown', // Animate.css class names
+                        close: 'animated fadeOutDown', // Animate.css class names
+                        easing: 'swing', // unavailable - no need
+                        speed: 500 // opening & closing animation speed
+                    }});
                 $("#filterForm").hide();
+                $("#placeholderContainer").show();
             }
             renderTables(dataset);
             $("#loaderspinner").hide();
