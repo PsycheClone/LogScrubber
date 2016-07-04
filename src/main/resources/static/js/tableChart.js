@@ -53,6 +53,7 @@ function renderTables(data) {
     var html = template(data);
     $("#tableContainer").append(html);
     $(".datasetTable").dataTable({
+        order: [[ 0, "asc" ]],
         paging: false,
         searching: false,
         info: false
