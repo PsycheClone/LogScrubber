@@ -8,7 +8,13 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh 'mvn clean'
+        sh 'mvn clean install -DskipTests'
+      }
+    }
+    stage('') {
+      steps {
+        sh '''cd ape-adapter
+sudo docker build --no-cache -t dsl.melexis.com:5000/ape/$module:$dockerContainerVersion .'''
       }
     }
   }
