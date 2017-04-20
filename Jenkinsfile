@@ -1,9 +1,9 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('error') {
       steps {
-        git(url: 'https://gitlab.melexis.com/cbs/ape-functional-test', branch: 'master')
+        git(url: 'https://gitlab.melexis.com/cbs/ape-functional-test', branch: 'master', poll: true)
       }
     }
   }
