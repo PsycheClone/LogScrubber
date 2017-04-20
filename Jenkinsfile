@@ -3,7 +3,12 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git(url: 'https://gitlab.melexis.com/cbs/ape-functional-test', branch: 'master', poll: true, credentialsId: 'jenkins')
+        git(url: 'git@gitlab.melexis.com:cbs/ape-functional-test.git', branch: 'master', poll: true, credentialsId: 'jenkins')
+      }
+    }
+    stage('Build') {
+      steps {
+        sh 'mvn clean'
       }
     }
   }
